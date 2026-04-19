@@ -15,40 +15,42 @@ function formatKm(km: number): string {
 }
 
 export function RoundFeedback({ country, km, inside, points, missed }: Props) {
-  const tone = missed
+  const tone: "good" | "mid" | "bad" | "muted" = missed
     ? "muted"
-    : inside
+    : inside || points >= 500
       ? "good"
-      : points >= 500
-        ? "good"
-        : points >= 100
-          ? "mid"
-          : "bad"
-  const toneCls =
-    tone === "good"
-      ? "border-[color-mix(in_oklab,var(--color-map-correct)_60%,transparent)] bg-[color-mix(in_oklab,var(--color-map-correct)_10%,transparent)]"
-      : tone === "mid"
-        ? "border-primary/40 bg-primary/[0.05]"
-        : tone === "bad"
-          ? "border-destructive/40 bg-destructive/[0.05]"
-          : "border-border/70 bg-muted/20"
+      : points >= 100
+        ? "mid"
+        : "bad"
+  const toneCls = {
+    good:
+      "border-[color-mix(in_oklab,var(--color-map-correct)_55%,transparent)] bg-[color-mix(in_oklab,var(--color-map-correct)_8%,transparent)]",
+    mid: "border-primary/40 bg-primary/[0.04]",
+    bad: "border-destructive/40 bg-destructive/[0.04]",
+    muted: "border-border/70 bg-muted/20",
+  }[tone]
+
+  const eyebrow = missed ? "Time up" : inside ? "Bull's-eye" : "Distance"
+  const headline = missed ? "—" : inside ? "Inside the border" : formatKm(km)
 
   return (
-    <div className={cn("border p-4 space-y-2", toneCls)}>
+    <div className={cn("border p-5", toneCls)}>
       <div className="flex items-baseline justify-between gap-3">
-        <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          {missed ? "Time up" : inside ? "Inside" : "Distance"}
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          {eyebrow}
         </span>
-        <span className="text-xs text-muted-foreground">{country}</span>
+        <span className="font-serif text-base italic text-muted-foreground">
+          {country}
+        </span>
       </div>
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="text-2xl font-semibold tabular-nums">
-          {missed ? "—" : inside ? "Bull's-eye" : formatKm(km)}
+      <div className="mt-3 flex items-baseline justify-between gap-3">
+        <span className="font-serif text-3xl font-normal tabular-nums leading-none md:text-4xl">
+          {headline}
         </span>
         <span
           className={cn(
-            "text-xl font-semibold tabular-nums",
-            points > 0 ? "text-foreground" : "text-muted-foreground"
+            "font-serif text-3xl font-normal tabular-nums leading-none md:text-4xl",
+            points > 0 ? "text-primary" : "text-muted-foreground/70"
           )}
         >
           +{points}

@@ -11,6 +11,7 @@ import { randomCountries } from "@/lib/countries"
 import { useWorld } from "@/lib/geo"
 import { distanceToFeature, scoreForDistanceKm } from "@/lib/scoring"
 import { saveLocateBest } from "@/lib/storage"
+import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/play/locate")({ component: LocatePage })
 
@@ -53,7 +54,7 @@ type RoundResult = {
 }
 
 function LocatePage() {
-  const world = useWorld()
+  const { data: world } = useWorld()
   const [phase, setPhase] = useState<Phase>({ kind: "setup" })
 
   if (phase.kind === "setup") {
@@ -135,13 +136,21 @@ function LocatePage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8">
-      <nav className="mb-6 flex items-center gap-3 text-sm">
-        <Link to="/" className="text-muted-foreground hover:text-foreground">
-          ← Back
+    <div className="mx-auto max-w-6xl px-6 py-8 md:py-12">
+      <nav className="mb-8 flex items-center justify-between md:mb-12">
+        <Link
+          to="/"
+          className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+            ←
+          </span>
+          <span>Atlas</span>
         </Link>
-        <span className="text-muted-foreground">·</span>
-        <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span className="inline-flex items-baseline gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+          <span className="font-serif text-base italic normal-case tracking-normal text-muted-foreground/70">
+            I.
+          </span>
           Locate
         </span>
       </nav>
@@ -266,7 +275,7 @@ function ActiveRound({
       : null
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <GameHUD
         timerPct={phase.kind === "playing" ? timerPct : 0}
         stats={[
@@ -275,7 +284,7 @@ function ActiveRound({
           { label: "Score", value: `${phase.score}` },
         ]}
       />
-      <div className="border bg-card">
+      <div className="border border-border bg-card">
         <WorldMap
           crosshair
           onLocateClick={
@@ -299,7 +308,7 @@ function ActiveRound({
         />
       </div>
       {phase.kind === "feedback" && (
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3 md:flex-row md:items-stretch">
           <div className="md:flex-1">
             <RoundFeedback
               country={phase.last.country.name}
@@ -309,14 +318,29 @@ function ActiveRound({
               missed={phase.last.missed}
             />
           </div>
-          <Button size="lg" onClick={advance} className="md:self-stretch">
-            {phase.index + 1 >= phase.queue.length ? "See summary" : "Next →"}
+          <Button
+            size="lg"
+            onClick={advance}
+            className="group/next h-auto justify-between gap-4 px-6 text-xs uppercase tracking-[0.3em] md:w-56"
+          >
+            <span>
+              {phase.index + 1 >= phase.queue.length ? "Summary" : "Next round"}
+            </span>
+            <span aria-hidden className="transition-transform group-hover/next:translate-x-1">
+              →
+            </span>
           </Button>
         </div>
       )}
       {phase.kind === "playing" && (
-        <p className="text-xs text-muted-foreground">
-          Scroll to zoom · drag to pan · double-click to reset · click to place your pin.
+        <p className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+          <span>Tap to pin</span>
+          <span aria-hidden>·</span>
+          <span>Drag to pan</span>
+          <span aria-hidden>·</span>
+          <span>Pinch / scroll to zoom</span>
+          <span aria-hidden>·</span>
+          <span>Double-tap to reset</span>
         </p>
       )}
     </div>
@@ -335,45 +359,100 @@ function Summary({
     : 0
   const perfects = phase.history.filter((h) => h.inside).length
   return (
-    <div className="space-y-6 border bg-card p-6">
-      <div className="space-y-1">
-        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+    <div className="space-y-12 py-4 md:py-8">
+      <header className="space-y-6">
+        <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+          <span className="h-px w-6 bg-border" />
           Session complete
+        </span>
+        <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
+          <h2 className="font-serif text-7xl font-normal leading-none tabular-nums md:text-8xl">
+            {phase.score}
+          </h2>
+          <dl className="grid grid-cols-3 gap-x-8 gap-y-1 text-xs">
+            <Stat label="Turns" value={`${phase.turns}`} />
+            <Stat label="Per turn" value={`${phase.perTurnMs / 1000}s`} />
+            <Stat label="Avg" value={`${avg}`} />
+            <Stat label="Bull's-eyes" value={`${perfects}`} />
+            <Stat
+              label="Score / max"
+              value={`${Math.round((phase.score / (phase.turns * 1000)) * 100)}%`}
+            />
+          </dl>
         </div>
-        <h2 className="font-serif text-5xl font-normal tabular-nums">{phase.score}</h2>
-        <p className="text-sm text-muted-foreground">
-          {phase.turns} turns · {phase.perTurnMs / 1000}s each · avg{" "}
-          <span className="tabular-nums">{avg}</span> / turn · {perfects} bull's-eye
-          {perfects === 1 ? "" : "s"}
-        </p>
-      </div>
-      <div className="border">
-        <div className="grid grid-cols-[1fr_auto_auto] divide-y divide-border">
+      </header>
+
+      <section className="border-t border-border pt-8">
+        <div className="mb-6 flex items-baseline justify-between">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+            Round by round
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60 tabular-nums">
+            {phase.history.length} round{phase.history.length === 1 ? "" : "s"}
+          </span>
+        </div>
+        <ol className="divide-y divide-border/60">
           {phase.history.map((h, i) => (
-            <div key={i} className="contents">
-              <div className="px-3 py-2 text-sm">{h.country.name}</div>
-              <div className="px-3 py-2 text-right text-xs text-muted-foreground tabular-nums">
+            <li
+              key={i}
+              className="grid grid-cols-[auto_1fr_auto_auto] items-baseline gap-5 py-4"
+            >
+              <span className="font-serif text-lg italic tabular-nums text-muted-foreground/60">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="truncate text-sm">{h.country.name}</span>
+              <span className="text-[11px] uppercase tracking-[0.2em] tabular-nums text-muted-foreground">
                 {h.missed
                   ? "time up"
                   : h.inside
                     ? "inside"
                     : `${Math.round(h.km).toLocaleString()} km`}
-              </div>
-              <div className="px-3 py-2 text-right text-sm font-medium tabular-nums">
+              </span>
+              <span
+                className={cn(
+                  "font-serif text-xl tabular-nums",
+                  h.points > 0 ? "text-foreground" : "text-muted-foreground/60"
+                )}
+              >
                 +{h.points}
-              </div>
-            </div>
+              </span>
+            </li>
           ))}
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-3">
-        <Button size="lg" onClick={onPlayAgain}>
+        </ol>
+      </section>
+
+      <div className="flex flex-wrap items-center gap-6 border-t border-border pt-8">
+        <Button
+          size="lg"
+          onClick={onPlayAgain}
+          className="group/again gap-2 px-6 text-xs uppercase tracking-[0.3em]"
+        >
           Play again
+          <span aria-hidden className="transition-transform group-hover/again:translate-x-1">
+            →
+          </span>
         </Button>
-        <Link to="/" className="self-center text-sm text-muted-foreground hover:text-foreground">
-          Home
+        <Link
+          to="/"
+          className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+            ←
+          </span>
+          Atlas
         </Link>
       </div>
+    </div>
+  )
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="space-y-1">
+      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        {label}
+      </dt>
+      <dd className="font-serif text-lg font-normal tabular-nums">{value}</dd>
     </div>
   )
 }

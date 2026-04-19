@@ -21,6 +21,13 @@ type Props = {
   onStart: (values: Record<string, number>) => void
 }
 
+/** Splits "Locate mode" → ["Locate", "mode"] so the first word can render as italic primary. */
+function splitTitle(t: string): [string, string] {
+  const i = t.indexOf(" ")
+  if (i === -1) return [t, ""]
+  return [t.slice(0, i), t.slice(i + 1)]
+}
+
 export function SessionConfig({
   title,
   description,
@@ -35,22 +42,44 @@ export function SessionConfig({
   })
   const [custom, setCustom] = useState<Record<string, boolean>>({})
 
+  const [accent, rest] = splitTitle(title)
+
   return (
-    <div className="space-y-8 border bg-card p-6">
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </div>
-      <div className="space-y-6">
-        {groups.map((g) => {
+    <div className="space-y-12 py-4 md:py-8">
+      <header className="space-y-5">
+        <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+          <span className="h-px w-6 bg-border" />
+          New session
+        </span>
+        <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-tight md:text-5xl">
+          <em className="italic text-primary">{accent}</em>
+          {rest && ` ${rest}`}.
+        </h2>
+        <p className="max-w-prose text-sm leading-relaxed text-muted-foreground md:text-base">
+          {description}
+        </p>
+      </header>
+
+      <div className="space-y-10 border-t border-border pt-10">
+        {groups.map((g, idx) => {
           const value = values[g.key]
           const isCustom = custom[g.key] ?? false
           return (
-            <div key={g.key} className="space-y-2">
-              <div className="flex items-baseline justify-between">
-                <label className="text-sm font-medium">{g.label}</label>
-                <span className="text-xs text-muted-foreground">
-                  {value} {g.unit}
+            <fieldset key={g.key} className="space-y-4">
+              <div className="flex items-baseline justify-between gap-4">
+                <legend className="flex items-baseline gap-3">
+                  <span className="font-serif text-xl italic text-muted-foreground/70">
+                    {`${String(idx + 1).padStart(2, "0")}.`}
+                  </span>
+                  <span className="text-sm font-medium tracking-tight">
+                    {g.label}
+                  </span>
+                </legend>
+                <span className="font-serif text-base tabular-nums text-muted-foreground">
+                  {value}
+                  <span className="ml-1 text-[10px] uppercase tracking-[0.2em]">
+                    {g.unit}
+                  </span>
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -65,10 +94,10 @@ export function SessionConfig({
                         setCustom((cu) => ({ ...cu, [g.key]: false }))
                       }}
                       className={cn(
-                        "h-9 min-w-[3.5rem] border px-3 text-sm transition-colors",
+                        "h-9 min-w-[3.25rem] border px-3 text-xs uppercase tracking-[0.18em] transition-colors",
                         active
                           ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border hover:bg-accent/10"
+                          : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
                       )}
                     >
                       {c.label}
@@ -79,10 +108,10 @@ export function SessionConfig({
                   type="button"
                   onClick={() => setCustom((cu) => ({ ...cu, [g.key]: !cu[g.key] }))}
                   className={cn(
-                    "h-9 min-w-[3.5rem] border px-3 text-sm transition-colors",
+                    "h-9 min-w-[3.25rem] border px-3 text-xs uppercase tracking-[0.18em] transition-colors",
                     isCustom
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border hover:bg-accent/10"
+                      : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
                   )}
                 >
                   Custom
@@ -106,13 +135,23 @@ export function SessionConfig({
                   className="h-9 w-32"
                 />
               )}
-            </div>
+            </fieldset>
           )
         })}
       </div>
-      <Button size="lg" className="w-full" onClick={() => onStart(values)}>
-        {ctaLabel}
-      </Button>
+
+      <div className="border-t border-border pt-8">
+        <Button
+          size="lg"
+          className="group/cta w-full justify-between text-xs uppercase tracking-[0.3em]"
+          onClick={() => onStart(values)}
+        >
+          <span>{ctaLabel}</span>
+          <span aria-hidden className="transition-transform group-hover/cta:translate-x-1">
+            →
+          </span>
+        </Button>
+      </div>
     </div>
   )
 }

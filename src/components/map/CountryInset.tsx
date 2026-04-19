@@ -42,7 +42,7 @@ function expandBounds(
 }
 
 export function CountryInset({ targetId, className }: Props) {
-  const world = useWorld()
+  const { data: world, error } = useWorld()
 
   const paths = useMemo(() => {
     if (!world) return []
@@ -77,6 +77,19 @@ export function CountryInset({ targetId, className }: Props) {
       d: path(f) ?? "",
     }))
   }, [world, targetId])
+
+  if (error) {
+    return (
+      <div
+        className={cn(
+          "flex aspect-[3/2] w-full items-center justify-center bg-[var(--color-map-ocean)] p-2 text-center text-xs text-muted-foreground",
+          className
+        )}
+      >
+        Map unavailable
+      </div>
+    )
+  }
 
   return (
     <svg

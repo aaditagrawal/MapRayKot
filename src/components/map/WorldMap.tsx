@@ -3,6 +3,7 @@ import { CountryPath } from "./CountryPath"
 import { Graticule } from "./Graticule"
 import { ResultMarker } from "./ResultMarker"
 import { useZoomPan } from "./useZoomPan"
+import { Button } from "@/components/ui/button"
 import { makeProjection, pathGenerator, useWorld } from "@/lib/geo"
 import { cn } from "@/lib/utils"
 
@@ -31,7 +32,45 @@ type Props = {
   crosshair?: boolean
 }
 
-export function WorldMap({
+export function WorldMap(props: Props) {
+  const { data: world, error, loading, retry } = useWorld()
+
+  if (error) {
+    return (
+      <div
+        className={cn(
+          "flex aspect-[12/6.5] w-full flex-col items-center justify-center gap-3 bg-[var(--color-map-ocean)] p-6 text-center",
+          props.className
+        )}
+        role="alert"
+      >
+        <p className="text-sm text-foreground">Couldn't load the world map.</p>
+        <p className="max-w-md text-xs text-muted-foreground">{error.message}</p>
+        <Button size="sm" onClick={retry}>
+          Try again
+        </Button>
+      </div>
+    )
+  }
+
+  if (loading || !world) {
+    return (
+      <div
+        className={cn(
+          "flex aspect-[12/6.5] w-full items-center justify-center bg-[var(--color-map-ocean)]",
+          props.className
+        )}
+        aria-busy="true"
+      >
+        <span className="text-xs text-muted-foreground">Loading map…</span>
+      </div>
+    )
+  }
+
+  return <WorldMapInner {...props} world={world} />
+}
+
+function WorldMapInner({
   onLocateClick,
   targetId,
   solvedIds,
@@ -40,33 +79,35 @@ export function WorldMap({
   hideGraticule,
   className,
   crosshair,
-}: Props) {
-  const world = useWorld()
+  world,
+}: Props & { world: NonNullable<ReturnType<typeof useWorld>["data"]> }) {
   const [hoverId, setHoverId] = useState<string | null>(null)
   const downRef = useRef<{ x: number; y: number } | null>(null)
 
-  const projection = useMemo(() => {
-    if (!world) return null
-    return makeProjection(VB_W, VB_H, {
-      type: "FeatureCollection",
-      features: world.features,
-    })
-  }, [world])
+  const projection = useMemo(
+    () =>
+      makeProjection(VB_W, VB_H, {
+        type: "FeatureCollection",
+        features: world.features,
+      }),
+    [world]
+  )
 
-  const path = useMemo(() => (projection ? pathGenerator(projection) : null), [projection])
+  const path = useMemo(() => pathGenerator(projection), [projection])
 
   /** Precompute path strings once. */
-  const paths = useMemo(() => {
-    if (!path || !world) return []
-    return world.features.map((f) => ({
-      id: f.id == null ? "" : String(f.id),
-      d: path(f) ?? "",
-    }))
-  }, [path, world])
+  const paths = useMemo(
+    () =>
+      world.features.map((f) => ({
+        id: f.id == null ? "" : String(f.id),
+        d: path(f) ?? "",
+      })),
+    [path, world]
+  )
 
   /** Ring marker around the target country so it's easy to spot on the world. */
   const targetRing = useMemo(() => {
-    if (!targetId || !path || !world || onLocateClick) return null
+    if (!targetId || onLocateClick) return null
     const target = world.featuresById.get(targetId)
     if (!target) return null
     const [[bx0, by0], [bx1, by1]] = path.bounds(target)
@@ -78,7 +119,24 @@ export function WorldMap({
     return { cx, cy, r }
   }, [targetId, path, world, onLocateClick])
 
-  const { transform, svgHandlers } = useZoomPan({ minScale: 1, maxScale: 24 })
+  const {
+    transform,
+    svgHandlers,
+    wheelHandler,
+    reset,
+    zoomIn,
+    zoomOut,
+    canZoomIn,
+    canZoomOut,
+  } = useZoomPan({ minScale: 1, maxScale: 24, vbW: VB_W, vbH: VB_H })
+
+  const svgRef = useRef<SVGSVGElement>(null)
+  useEffect(() => {
+    const el = svgRef.current
+    if (!el) return
+    el.addEventListener("wheel", wheelHandler, { passive: false })
+    return () => el.removeEventListener("wheel", wheelHandler)
+  }, [wheelHandler])
 
   const onSvgPointerDown: React.PointerEventHandler<SVGSVGElement> = (e) => {
     downRef.current = { x: e.clientX, y: e.clientY }
@@ -89,9 +147,9 @@ export function WorldMap({
     const down = downRef.current
     downRef.current = null
     if (wasDragged) return
-    if (!onLocateClick || !projection) return
+    if (!onLocateClick) return
     if (!down) return
-    // Convert client → SVG viewBox coords → apply inverse zoom transform → invert projection
+    // Touch taps shouldn't fire if the touch ended outside the svg.
     const svg = e.currentTarget
     const r = svg.getBoundingClientRect()
     const vx = ((e.clientX - r.left) / r.width) * VB_W
@@ -99,16 +157,18 @@ export function WorldMap({
     const gx = (vx - transform.tx) / transform.k
     const gy = (vy - transform.ty) / transform.k
     const lonLat = projection.invert?.([gx, gy])
-    if (lonLat) onLocateClick([lonLat[0], lonLat[1]] as [number, number])
+    if (!lonLat) return
+    const [lon, lat] = lonLat
+    if (!Number.isFinite(lon) || !Number.isFinite(lat)) return
+    onLocateClick([lon, lat] as [number, number])
   }
 
   // Clear hover on pointerleave (in case pointerleave on a path is missed)
   useEffect(() => {
-    if (!world) return
     const onUp = () => setHoverId((h) => h)
     window.addEventListener("pointerup", onUp)
     return () => window.removeEventListener("pointerup", onUp)
-  }, [world])
+  }, [])
 
   const variantFor = (id: string) => {
     if (wrongId && id === wrongId) return "wrong" as const
@@ -119,67 +179,102 @@ export function WorldMap({
   }
 
   return (
-    <svg
-      viewBox={`0 0 ${VB_W} ${VB_H}`}
-      xmlns="http://www.w3.org/2000/svg"
-      className={cn(
-        "touch-none select-none",
-        crosshair ? "cursor-crosshair" : "cursor-grab active:cursor-grabbing",
-        className
-      )}
-      {...svgHandlers}
-      onPointerDown={onSvgPointerDown}
-      onPointerUp={onSvgPointerUp}
-    >
-      <rect x={0} y={0} width={VB_W} height={VB_H} fill="var(--color-map-ocean)" />
+    <div className={cn("relative", className)}>
+      <svg
+        ref={svgRef}
+        viewBox={`0 0 ${VB_W} ${VB_H}`}
+        xmlns="http://www.w3.org/2000/svg"
+        className={cn(
+          "block h-auto w-full touch-none select-none overscroll-contain",
+          crosshair ? "cursor-crosshair" : "cursor-grab active:cursor-grabbing"
+        )}
+        {...svgHandlers}
+        onPointerDown={onSvgPointerDown}
+        onPointerUp={onSvgPointerUp}
+      >
+        <rect x={0} y={0} width={VB_W} height={VB_H} fill="var(--color-map-ocean)" />
 
-      <g transform={`translate(${transform.tx} ${transform.ty}) scale(${transform.k})`}>
-        {path && !hideGraticule && <Graticule path={path} />}
-        {paths.map(({ id, d }) => (
-          <CountryPath
-            key={id || d.slice(0, 12)}
-            d={d}
-            variant={variantFor(id)}
-            interactive={!onLocateClick}
-            onHover={
-              !onLocateClick && id
-                ? (h) => setHoverId(h ? id : (curr) => (curr === id ? null : curr))
-                : undefined
-            }
-          />
-        ))}
-        {marker && projection && (
-          <ResultMarker
-            projection={projection}
-            click={marker.click}
-            nearest={marker.nearest}
-            inside={marker.inside}
-          />
-        )}
-        {targetRing && (
-          <g pointerEvents="none">
-            <circle
-              cx={targetRing.cx}
-              cy={targetRing.cy}
-              r={targetRing.r + 6}
-              fill="none"
-              stroke="var(--color-map-target)"
-              strokeOpacity={0.35}
-              strokeWidth={1}
-              vectorEffect="non-scaling-stroke"
+        <g transform={`translate(${transform.tx} ${transform.ty}) scale(${transform.k})`}>
+          {!hideGraticule && <Graticule path={path} />}
+          {paths.map(({ id, d }) => (
+            <CountryPath
+              key={id || d.slice(0, 12)}
+              d={d}
+              variant={variantFor(id)}
+              interactive={!onLocateClick}
+              onHover={
+                !onLocateClick && id
+                  ? (h) => setHoverId(h ? id : (curr) => (curr === id ? null : curr))
+                  : undefined
+              }
             />
-            <circle
-              cx={targetRing.cx}
-              cy={targetRing.cy}
-              r={targetRing.r}
-              fill="none"
-              stroke="var(--color-map-target)"
-              strokeWidth={1.75}
-              vectorEffect="non-scaling-stroke"
+          ))}
+          {marker && (
+            <ResultMarker
+              projection={projection}
+              click={marker.click}
+              nearest={marker.nearest}
+              inside={marker.inside}
             />
-          </g>
-        )}
-      </g>
-    </svg>
+          )}
+          {targetRing && (
+            <g pointerEvents="none">
+              <circle
+                cx={targetRing.cx}
+                cy={targetRing.cy}
+                r={targetRing.r + 6}
+                fill="none"
+                stroke="var(--color-map-target)"
+                strokeOpacity={0.35}
+                strokeWidth={1}
+                vectorEffect="non-scaling-stroke"
+              />
+              <circle
+                cx={targetRing.cx}
+                cy={targetRing.cy}
+                r={targetRing.r}
+                fill="none"
+                stroke="var(--color-map-target)"
+                strokeWidth={1.75}
+                vectorEffect="non-scaling-stroke"
+              />
+            </g>
+          )}
+        </g>
+      </svg>
+
+      <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="outline"
+          aria-label="Zoom in"
+          onClick={zoomIn}
+          disabled={!canZoomIn}
+        >
+          +
+        </Button>
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="outline"
+          aria-label="Zoom out"
+          onClick={zoomOut}
+          disabled={!canZoomOut}
+        >
+          −
+        </Button>
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="outline"
+          aria-label="Reset view"
+          onClick={reset}
+          disabled={transform.k === 1 && transform.tx === 0 && transform.ty === 0}
+        >
+          ⟲
+        </Button>
+      </div>
+    </div>
   )
 }

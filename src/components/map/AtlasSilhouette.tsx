@@ -7,7 +7,7 @@ const VB_W = 960
 const VB_H = 520
 
 export function AtlasSilhouette({ className }: { className?: string }) {
-  const world = useWorld()
+  const { data: world } = useWorld()
 
   const paths = useMemo(() => {
     if (!world) return []

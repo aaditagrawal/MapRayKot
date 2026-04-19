@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { geoBounds, geoCentroid, geoContains, geoEqualEarth, geoPath } from "d3-geo"
 import type { GeoPermissibleObjects, GeoProjection } from "d3-geo"
 import type {
@@ -20,12 +20,13 @@ export type WorldData = {
 }
 
 let cache: Promise<WorldData> | null = null
+let resolved: WorldData | null = null
 
 export function loadWorld(): Promise<WorldData> {
   if (cache) return cache
-  cache = (async () => {
+  const p = (async () => {
     const res = await fetch("/world.json")
-    if (!res.ok) throw new Error(`failed to load world.json: ${res.status}`)
+    if (!res.ok) throw new Error(`failed to load world data (HTTP ${res.status})`)
     const fc = (await res.json()) as FeatureCollection<
       Polygon | MultiPolygon,
       { name?: string }
@@ -36,27 +37,64 @@ export function loadWorld(): Promise<WorldData> {
       if (f.id != null) featuresById.set(String(f.id), f)
     }
     const indiaFeature = featuresById.get("356") ?? null
-    return { features, featuresById, indiaFeature }
+    const data: WorldData = { features, featuresById, indiaFeature }
+    resolved = data
+    return data
   })()
-  return cache
+  p.catch(() => {
+    if (cache === p) cache = null
+  })
+  cache = p
+  return p
 }
 
-export function useWorld(): WorldData | null {
-  const [data, setData] = useState<WorldData | null>(null)
+export type WorldState = {
+  data: WorldData | null
+  error: Error | null
+  loading: boolean
+  retry: () => void
+}
+
+export function useWorld(): WorldState {
+  const [data, setData] = useState<WorldData | null>(() => resolved)
+  const [error, setError] = useState<Error | null>(null)
+  const [loading, setLoading] = useState(() => resolved == null)
+  const [attempt, setAttempt] = useState(0)
+
   useEffect(() => {
     let cancelled = false
-    loadWorld().then((d) => {
-      if (!cancelled) setData(d)
-    })
+    if (resolved && attempt === 0) {
+      setData(resolved)
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    setError(null)
+    loadWorld()
+      .then((d) => {
+        if (cancelled) return
+        setData(d)
+        setLoading(false)
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return
+        setError(err instanceof Error ? err : new Error(String(err)))
+        setLoading(false)
+      })
     return () => {
       cancelled = true
     }
-  }, [])
-  return data
+  }, [attempt])
+
+  const retry = useCallback(() => setAttempt((n) => n + 1), [])
+
+  return { data, error, loading, retry }
 }
 
 if (typeof window !== "undefined") {
-  void loadWorld()
+  void loadWorld().catch(() => {
+    /* surfaced via useWorld() */
+  })
 }
 
 /** Equal Earth projection fitted into a [w,h] viewbox around the given features. */

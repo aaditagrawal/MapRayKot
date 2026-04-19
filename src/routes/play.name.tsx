@@ -95,13 +95,21 @@ function NamePage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8">
-      <nav className="mb-6 flex items-center gap-3 text-sm">
-        <Link to="/" className="text-muted-foreground hover:text-foreground">
-          ← Back
+    <div className="mx-auto max-w-6xl px-6 py-8 md:py-12">
+      <nav className="mb-8 flex items-center justify-between md:mb-12">
+        <Link
+          to="/"
+          className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+            ←
+          </span>
+          <span>Atlas</span>
         </Link>
-        <span className="text-muted-foreground">·</span>
-        <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span className="inline-flex items-baseline gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+          <span className="font-serif text-base italic normal-case tracking-normal text-muted-foreground/70">
+            II.
+          </span>
           Name
         </span>
       </nav>
@@ -232,7 +240,7 @@ function Active({
   const score = phase.solved.length * 4 - phase.skipped.length
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <GameHUD
         timerPct={timerPct}
         stats={[
@@ -242,8 +250,8 @@ function Active({
           { label: "Skipped", value: `${phase.skipped.length}` },
         ]}
       />
-      <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-        <div className="border bg-card">
+      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+        <div className="border border-border bg-card">
           <WorldMap
             targetId={target.id}
             solvedIds={solvedIds}
@@ -251,34 +259,65 @@ function Active({
             className="h-auto w-full"
           />
         </div>
-        <div className="flex flex-col gap-3">
-          <div className="border bg-card p-3">
-            <div className="mb-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Region
+        <div className="flex flex-col gap-5">
+          <section className="border border-border bg-card">
+            <div className="flex items-baseline justify-between border-b border-border/60 px-4 py-3">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                Region
+              </span>
+              <span className="font-serif text-sm italic text-muted-foreground/70">
+                close-up
+              </span>
             </div>
-            <CountryInset targetId={target.id} className="h-auto w-full" />
-          </div>
-          <div className="border bg-card p-3">
-            <div className="mb-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Your answer
+            <div className="p-3">
+              <CountryInset targetId={target.id} className="h-auto w-full" />
             </div>
-            <CountryAutocomplete pool={pool} onSolve={onSolve} />
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex-1" onClick={onSkip}>
-              Skip (−1)
-            </Button>
-          </div>
+          </section>
+
+          <section className="border border-border bg-card">
+            <div className="flex items-baseline justify-between border-b border-border/60 px-4 py-3">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                Your answer
+              </span>
+              <span className="font-serif text-sm italic text-muted-foreground/70">
+                +4 / −1
+              </span>
+            </div>
+            <div className="p-3">
+              <CountryAutocomplete pool={pool} onSolve={onSolve} />
+            </div>
+          </section>
+
+          <Button
+            variant="outline"
+            onClick={onSkip}
+            className="group/skip h-10 justify-between text-xs uppercase tracking-[0.3em]"
+          >
+            <span>Skip</span>
+            <span className="font-serif text-base italic text-muted-foreground/70 normal-case tracking-normal">
+              −1
+            </span>
+          </Button>
+
           {phase.flash && (
-            <div className="border border-destructive/50 bg-destructive/[0.05] p-3 text-sm">
-              <span className="text-muted-foreground">Skipped · </span>
-              <span className="font-medium">{phase.flash.country.name}</span>
+            <div className="border border-destructive/50 bg-destructive/[0.05] px-4 py-3">
+              <div className="text-[10px] uppercase tracking-[0.3em] text-destructive/80">
+                Skipped
+              </div>
+              <div className="mt-1 font-serif text-xl italic">
+                {phase.flash.country.name}
+              </div>
             </div>
           )}
         </div>
       </div>
-      <p className="text-xs text-muted-foreground">
-        Type the highlighted country's name · Enter submits · scroll/drag the map to explore.
+
+      <p className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+        <span>Type the highlighted country</span>
+        <span aria-hidden>·</span>
+        <span>Enter submits</span>
+        <span aria-hidden>·</span>
+        <span>Pinch / scroll to zoom</span>
       </p>
     </div>
   )
@@ -293,42 +332,85 @@ function Summary({
 }) {
   const score = phase.solved.length * 4 - phase.skipped.length
   const total = phase.solved.length + phase.skipped.length
+  const accuracy = total > 0 ? Math.round((phase.solved.length / total) * 100) : 0
   return (
-    <div className="space-y-6 border bg-card p-6">
-      <div className="space-y-1">
-        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+    <div className="space-y-12 py-4 md:py-8">
+      <header className="space-y-6">
+        <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+          <span className="h-px w-6 bg-border" />
           Session complete
+        </span>
+        <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
+          <h2 className="font-serif text-7xl font-normal leading-none tabular-nums md:text-8xl">
+            {score}
+          </h2>
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-1 text-xs sm:grid-cols-4">
+            <NameStat label="Correct" value={`${phase.solved.length}`} />
+            <NameStat label="Skipped" value={`${phase.skipped.length}`} />
+            <NameStat label="Accuracy" value={`${accuracy}%`} />
+            <NameStat
+              label="Length"
+              value={`${Math.round(phase.totalMs / 60_000)} min`}
+            />
+          </dl>
         </div>
-        <h2 className="font-serif text-5xl font-normal tabular-nums">{score}</h2>
-        <p className="text-sm text-muted-foreground">
-          {phase.solved.length} correct · {phase.skipped.length} skipped · {total} answered · {Math.round(phase.totalMs / 60_000)} min
-        </p>
-      </div>
+      </header>
+
       {phase.skipped.length > 0 && (
-        <div>
-          <div className="mb-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Missed
+        <section className="border-t border-border pt-8">
+          <div className="mb-5 flex items-baseline justify-between">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+              Missed
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60 tabular-nums">
+              {phase.skipped.length}
+            </span>
           </div>
-          <div className="flex flex-wrap gap-1.5">
+          <ul className="flex flex-wrap gap-2">
             {phase.skipped.map((c) => (
-              <span
+              <li
                 key={c.id}
-                className="border border-destructive/30 px-2 py-0.5 text-xs text-muted-foreground"
+                className="border border-destructive/30 px-3 py-1 font-serif text-sm italic text-muted-foreground"
               >
                 {c.name}
-              </span>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
       )}
-      <div className="flex flex-wrap gap-3">
-        <Button size="lg" onClick={onPlayAgain}>
+
+      <div className="flex flex-wrap items-center gap-6 border-t border-border pt-8">
+        <Button
+          size="lg"
+          onClick={onPlayAgain}
+          className="group/again gap-2 px-6 text-xs uppercase tracking-[0.3em]"
+        >
           Play again
+          <span aria-hidden className="transition-transform group-hover/again:translate-x-1">
+            →
+          </span>
         </Button>
-        <Link to="/" className="self-center text-sm text-muted-foreground hover:text-foreground">
-          Home
+        <Link
+          to="/"
+          className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+            ←
+          </span>
+          Atlas
         </Link>
       </div>
+    </div>
+  )
+}
+
+function NameStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="space-y-1">
+      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        {label}
+      </dt>
+      <dd className="font-serif text-lg font-normal tabular-nums">{value}</dd>
     </div>
   )
 }

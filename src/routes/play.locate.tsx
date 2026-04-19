@@ -279,7 +279,7 @@ function ActiveRound({
       <GameHUD
         timerPct={phase.kind === "playing" ? timerPct : 0}
         stats={[
-          { label: "Find", value: target.name, accent: true },
+          { label: "Find", value: target.name, accent: true, wide: true },
           { label: "Round", value: `${phase.index + 1} / ${phase.turns}` },
           { label: "Score", value: `${phase.score}` },
         ]}
@@ -321,12 +321,16 @@ function ActiveRound({
           <Button
             size="lg"
             onClick={advance}
-            className="group/next h-auto justify-between gap-4 px-6 text-xs uppercase tracking-[0.3em] md:w-56"
+            autoFocus
+            className="group/next h-14 w-full justify-between gap-4 px-6 text-sm uppercase tracking-[0.3em] md:h-auto md:w-60"
           >
             <span>
               {phase.index + 1 >= phase.queue.length ? "Summary" : "Next round"}
             </span>
-            <span aria-hidden className="transition-transform group-hover/next:translate-x-1">
+            <span
+              aria-hidden
+              className="text-base transition-transform group-hover/next:translate-x-1"
+            >
               →
             </span>
           </Button>

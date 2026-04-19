@@ -1,13 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
+@import "@fontsource-variable/instrument-sans";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-mono);
-    --font-mono: 'JetBrains Mono Variable', monospace;
+    --font-heading: 'Instrument Serif', ui-serif, Georgia, serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+    --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,75 +49,103 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --color-map-ocean: var(--map-ocean);
+    --color-map-land: var(--map-land);
+    --color-map-land-hover: var(--map-land-hover);
+    --color-map-target: var(--map-target);
+    --color-map-correct: var(--map-correct);
+    --color-map-wrong: var(--map-wrong);
+    --color-map-stroke: var(--map-stroke);
+    --color-map-graticule: var(--map-graticule);
 }
 
+/* Catppuccin Latte — blue-anchored light theme */
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.148 0.004 228.8);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.148 0.004 228.8);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.148 0.004 228.8);
-    --primary: oklch(0.555 0.163 48.998);
-    --primary-foreground: oklch(0.987 0.022 95.277);
-    --secondary: oklch(0.967 0.001 286.375);
-    --secondary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.963 0.002 197.1);
-    --muted-foreground: oklch(0.56 0.021 213.5);
-    --accent: oklch(0.555 0.163 48.998);
-    --accent-foreground: oklch(0.987 0.022 95.277);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.925 0.005 214.3);
-    --input: oklch(0.925 0.005 214.3);
-    --ring: oklch(0.723 0.014 214.4);
-    --chart-1: oklch(0.785 0.115 274.713);
-    --chart-2: oklch(0.585 0.233 277.117);
-    --chart-3: oklch(0.511 0.262 276.966);
-    --chart-4: oklch(0.457 0.24 277.023);
-    --chart-5: oklch(0.398 0.195 277.366);
+    --background: #eff1f5;          /* base */
+    --foreground: #4c4f69;          /* text */
+    --card: #ffffff;                /* lifted above base */
+    --card-foreground: #4c4f69;
+    --popover: #ffffff;
+    --popover-foreground: #4c4f69;
+    --primary: #1e66f5;             /* blue */
+    --primary-foreground: #eff1f5;
+    --secondary: #e6e9ef;           /* mantle */
+    --secondary-foreground: #4c4f69;
+    --muted: #e6e9ef;               /* mantle */
+    --muted-foreground: #6c6f85;    /* subtext0 */
+    --accent: #1e66f5;              /* blue */
+    --accent-foreground: #eff1f5;
+    --destructive: #d20f39;         /* red */
+    --border: #ccd0da;              /* surface0 */
+    --input: #ccd0da;
+    --ring: #1e66f5;
+    --chart-1: #1e66f5;             /* blue */
+    --chart-2: #209fb5;             /* sapphire */
+    --chart-3: #04a5e5;             /* sky */
+    --chart-4: #7287fd;             /* lavender */
+    --chart-5: #8839ef;             /* mauve */
     --radius: 0;
-    --sidebar: oklch(0.987 0.002 197.1);
-    --sidebar-foreground: oklch(0.148 0.004 228.8);
-    --sidebar-primary: oklch(0.666 0.179 58.318);
-    --sidebar-primary-foreground: oklch(0.987 0.022 95.277);
-    --sidebar-accent: oklch(0.963 0.002 197.1);
-    --sidebar-accent-foreground: oklch(0.218 0.008 223.9);
-    --sidebar-border: oklch(0.925 0.005 214.3);
-    --sidebar-ring: oklch(0.723 0.014 214.4);
+    --sidebar: #e6e9ef;
+    --sidebar-foreground: #4c4f69;
+    --sidebar-primary: #1e66f5;
+    --sidebar-primary-foreground: #eff1f5;
+    --sidebar-accent: #dce0e8;
+    --sidebar-accent-foreground: #4c4f69;
+    --sidebar-border: #ccd0da;
+    --sidebar-ring: #1e66f5;
+
+    /* Map palette — derived from the design system. */
+    --map-ocean: color-mix(in oklab, var(--muted) 70%, var(--primary) 30%);
+    --map-land: var(--card);
+    --map-land-hover: color-mix(in oklab, var(--card) 55%, var(--primary) 45%);
+    --map-target: var(--primary);
+    --map-correct: #40a02b;         /* latte green */
+    --map-wrong: var(--destructive);
+    --map-stroke: color-mix(in oklab, var(--foreground) 35%, transparent 65%);
+    --map-graticule: color-mix(in oklab, var(--foreground) 14%, transparent 86%);
 }
 
+/* Catppuccin Mocha — blue-anchored dark theme */
 .dark {
-    --background: oklch(0.148 0.004 228.8);
-    --foreground: oklch(0.987 0.002 197.1);
-    --card: oklch(0.218 0.008 223.9);
-    --card-foreground: oklch(0.987 0.002 197.1);
-    --popover: oklch(0.218 0.008 223.9);
-    --popover-foreground: oklch(0.987 0.002 197.1);
-    --primary: oklch(0.473 0.137 46.201);
-    --primary-foreground: oklch(0.987 0.022 95.277);
-    --secondary: oklch(0.274 0.006 286.033);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.275 0.011 216.9);
-    --muted-foreground: oklch(0.723 0.014 214.4);
-    --accent: oklch(0.473 0.137 46.201);
-    --accent-foreground: oklch(0.987 0.022 95.277);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.56 0.021 213.5);
-    --chart-1: oklch(0.785 0.115 274.713);
-    --chart-2: oklch(0.585 0.233 277.117);
-    --chart-3: oklch(0.511 0.262 276.966);
-    --chart-4: oklch(0.457 0.24 277.023);
-    --chart-5: oklch(0.398 0.195 277.366);
-    --sidebar: oklch(0.218 0.008 223.9);
-    --sidebar-foreground: oklch(0.987 0.002 197.1);
-    --sidebar-primary: oklch(0.769 0.188 70.08);
-    --sidebar-primary-foreground: oklch(0.279 0.077 45.635);
-    --sidebar-accent: oklch(0.275 0.011 216.9);
-    --sidebar-accent-foreground: oklch(0.987 0.002 197.1);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.56 0.021 213.5);
+    --background: #1e1e2e;          /* base */
+    --foreground: #cdd6f4;          /* text */
+    --card: #181825;                /* mantle */
+    --card-foreground: #cdd6f4;
+    --popover: #313244;             /* surface0 */
+    --popover-foreground: #cdd6f4;
+    --primary: #89b4fa;             /* blue */
+    --primary-foreground: #11111b;  /* crust */
+    --secondary: #313244;           /* surface0 */
+    --secondary-foreground: #cdd6f4;
+    --muted: #313244;               /* surface0 */
+    --muted-foreground: #a6adc8;    /* subtext0 */
+    --accent: #89b4fa;              /* blue */
+    --accent-foreground: #11111b;
+    --destructive: #f38ba8;         /* red */
+    --border: #45475a;              /* surface1 */
+    --input: #45475a;
+    --ring: #89b4fa;
+    --chart-1: #89b4fa;             /* blue */
+    --chart-2: #74c7ec;             /* sapphire */
+    --chart-3: #89dceb;             /* sky */
+    --chart-4: #b4befe;             /* lavender */
+    --chart-5: #cba6f7;             /* mauve */
+    --sidebar: #181825;
+    --sidebar-foreground: #cdd6f4;
+    --sidebar-primary: #89b4fa;
+    --sidebar-primary-foreground: #11111b;
+    --sidebar-accent: #313244;
+    --sidebar-accent-foreground: #cdd6f4;
+    --sidebar-border: #45475a;
+    --sidebar-ring: #89b4fa;
+
+    /* Map palette overrides — same derivation, mocha green. */
+    --map-ocean: color-mix(in oklab, var(--background) 75%, var(--primary) 25%);
+    --map-land: color-mix(in oklab, var(--secondary) 80%, var(--foreground) 20%);
+    --map-land-hover: color-mix(in oklab, var(--secondary) 45%, var(--primary) 55%);
+    --map-correct: #a6e3a1;         /* mocha green */
+    --map-stroke: color-mix(in oklab, var(--foreground) 25%, transparent 75%);
+    --map-graticule: color-mix(in oklab, var(--foreground) 10%, transparent 90%);
 }
 
 @layer base {
@@ -125,6 +156,6 @@
     @apply bg-background text-foreground;
     }
   html {
-    @apply font-mono;
+    @apply font-sans;
     }
 }

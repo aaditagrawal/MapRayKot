@@ -215,6 +215,7 @@ function WorldMapInner({
               click={marker.click}
               nearest={marker.nearest}
               inside={marker.inside}
+              scale={transform.k}
             />
           )}
           {targetRing && (

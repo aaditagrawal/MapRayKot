@@ -5,12 +5,24 @@ type Props = {
   click: [number, number]
   nearest: [number, number] | null
   inside: boolean
+  /** Current zoom scale of the parent <g>; markers shrink in viewBox to keep constant on-screen size. */
+  scale?: number
 }
 
-export function ResultMarker({ projection, click, nearest, inside }: Props) {
+export function ResultMarker({
+  projection,
+  click,
+  nearest,
+  inside,
+  scale = 1,
+}: Props) {
   const c = projection(click)
   if (!c) return null
   const n = nearest ? projection(nearest) : null
+  const k = Math.max(scale, 0.0001)
+  const rClick = 4.5 / k
+  const rNearest = 3.5 / k
+  const dash = `${3 / k} ${3 / k}`
   return (
     <g pointerEvents="none">
       {n && !inside && (
@@ -21,7 +33,7 @@ export function ResultMarker({ projection, click, nearest, inside }: Props) {
           y2={n[1]}
           stroke="var(--color-map-wrong)"
           strokeWidth={1.2}
-          strokeDasharray="3 3"
+          strokeDasharray={dash}
           vectorEffect="non-scaling-stroke"
         />
       )}
@@ -29,7 +41,7 @@ export function ResultMarker({ projection, click, nearest, inside }: Props) {
         <circle
           cx={n[0]}
           cy={n[1]}
-          r={3.5}
+          r={rNearest}
           fill="var(--color-map-correct)"
           stroke="var(--color-background)"
           strokeWidth={1}
@@ -39,7 +51,7 @@ export function ResultMarker({ projection, click, nearest, inside }: Props) {
       <circle
         cx={c[0]}
         cy={c[1]}
-        r={4.5}
+        r={rClick}
         fill={inside ? "var(--color-map-correct)" : "var(--color-map-target)"}
         stroke="var(--color-background)"
         strokeWidth={1.25}

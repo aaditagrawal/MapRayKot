@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useState } from "react"
-import { geoBounds, geoCentroid, geoContains, geoEqualEarth, geoPath } from "d3-geo"
+import {
+  geoBounds,
+  geoCentroid,
+  geoContains,
+  geoEqualEarth,
+  geoPath,
+} from "d3-geo"
 import type { GeoPermissibleObjects, GeoProjection } from "d3-geo"
-import type {
-  Feature,
-  FeatureCollection,
-  MultiPolygon,
-  Polygon,
-} from "geojson"
+import type { Feature, FeatureCollection, MultiPolygon, Polygon } from "geojson"
 
-export type CountryFeature = Feature<
-  Polygon | MultiPolygon,
-  { name?: string }
->
+export type CountryFeature = Feature<Polygon | MultiPolygon, { name?: string }>
 
 export type WorldData = {
   features: Array<CountryFeature>
@@ -26,7 +24,8 @@ export function loadWorld(): Promise<WorldData> {
   if (cache) return cache
   const p = (async () => {
     const res = await fetch("/world.json")
-    if (!res.ok) throw new Error(`failed to load world data (HTTP ${res.status})`)
+    if (!res.ok)
+      throw new Error(`failed to load world data (HTTP ${res.status})`)
     const fc = (await res.json()) as FeatureCollection<
       Polygon | MultiPolygon,
       { name?: string }
@@ -130,6 +129,8 @@ export function featureCentroid(f: CountryFeature): [number, number] {
   return geoCentroid(f)
 }
 
-export function featureBounds(f: CountryFeature): [[number, number], [number, number]] {
+export function featureBounds(
+  f: CountryFeature
+): [[number, number], [number, number]] {
   return geoBounds(f)
 }

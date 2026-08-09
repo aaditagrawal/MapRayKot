@@ -19,7 +19,10 @@ export function isMatch(query: string, country: Country): boolean {
 }
 
 /** Rank countries for autocomplete. startsWith > includes > none. */
-export function rankForSearch(query: string, countries: ReadonlyArray<Country>): Array<Country> {
+export function rankForSearch(
+  query: string,
+  countries: ReadonlyArray<Country>
+): Array<Country> {
   const q = normalize(query)
   if (!q) return []
   const starts: Array<Country> = []

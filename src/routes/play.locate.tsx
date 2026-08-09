@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import type { Country } from "@/lib/countries"
 import type { WorldData } from "@/lib/geo"
 import { WorldMap } from "@/components/map/WorldMap"
@@ -125,11 +125,7 @@ function LocatePage() {
 
   return (
     <Shell>
-      <ActiveRound
-        phase={phase}
-        world={world}
-        onComplete={setPhase}
-      />
+      <ActiveRound phase={phase} world={world} onComplete={setPhase} />
     </Shell>
   )
 }
@@ -140,15 +136,18 @@ function Shell({ children }: { children: React.ReactNode }) {
       <nav className="mb-8 flex items-center justify-between md:mb-12">
         <Link
           to="/"
-          className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
-          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+          <span
+            aria-hidden
+            className="transition-transform group-hover:-translate-x-0.5"
+          >
             ←
           </span>
           <span>Atlas</span>
         </Link>
-        <span className="inline-flex items-baseline gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
-          <span className="font-serif text-base italic normal-case tracking-normal text-muted-foreground/70">
+        <span className="inline-flex items-baseline gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
+          <span className="font-serif text-base tracking-normal text-muted-foreground/70 normal-case italic">
             I.
           </span>
           Locate
@@ -172,6 +171,50 @@ function ActiveRound({
 }) {
   const [tick, setTick] = useState(0)
   const target = phase.queue[phase.index]
+  const turnStartedAt = phase.kind === "playing" ? phase.turnStartedAt : null
+  const perTurnMs = phase.kind === "playing" ? phase.perTurnMs : null
+
+  const resolveRound = useCallback(
+    (lonLat: [number, number] | null) => {
+      if (phase.kind !== "playing" || !world) return
+      const feature = world.featuresById.get(target.id)
+      let km = Infinity
+      let inside = false
+      let nearest: [number, number] | null = null
+      let points = 0
+      const missed = lonLat == null
+      if (lonLat && feature) {
+        const r = distanceToFeature(lonLat, feature)
+        km = r.km
+        inside = r.inside
+        nearest = r.nearest
+        points = scoreForDistanceKm(km, inside)
+      }
+      const result: RoundResult = {
+        country: target,
+        km,
+        inside,
+        points,
+        missed,
+      }
+      const nextHistory = [...phase.history, result]
+      const nextScore = phase.score + points
+      onComplete({
+        kind: "feedback",
+        queue: phase.queue,
+        index: phase.index,
+        score: nextScore,
+        perTurnMs: phase.perTurnMs,
+        turns: phase.turns,
+        history: nextHistory,
+        last: { ...result, click: lonLat, nearest } as RoundResult & {
+          click: [number, number] | null
+          nearest?: [number, number] | null
+        },
+      })
+    },
+    [onComplete, phase, target, world]
+  )
 
   // Timer tick for the progress bar + auto-advance on expire.
   const expiredRef = useRef(false)
@@ -183,47 +226,15 @@ function ActiveRound({
   }, [phase.kind, phase.index])
 
   useEffect(() => {
-    if (phase.kind !== "playing") return
-    const elapsed = performance.now() - phase.turnStartedAt
-    if (elapsed < phase.perTurnMs) return
+    if (phase.kind !== "playing" || turnStartedAt == null || perTurnMs == null)
+      return
+    const elapsed = performance.now() - turnStartedAt
+    if (elapsed < perTurnMs) return
     if (expiredRef.current) return
     expiredRef.current = true
     // Auto-advance on expire (missed)
     resolveRound(null)
-  }, [tick])
-
-  const resolveRound = (lonLat: [number, number] | null) => {
-    if (phase.kind !== "playing" || !world) return
-    const feature = world.featuresById.get(target.id)
-    let km = Infinity
-    let inside = false
-    let nearest: [number, number] | null = null
-    let points = 0
-    const missed = lonLat == null
-    if (lonLat && feature) {
-      const r = distanceToFeature(lonLat, feature)
-      km = r.km
-      inside = r.inside
-      nearest = r.nearest
-      points = scoreForDistanceKm(km, inside)
-    }
-    const result: RoundResult = { country: target, km, inside, points, missed }
-    const nextHistory = [...phase.history, result]
-    const nextScore = phase.score + points
-    onComplete({
-      kind: "feedback",
-      queue: phase.queue,
-      index: phase.index,
-      score: nextScore,
-      perTurnMs: phase.perTurnMs,
-      turns: phase.turns,
-      history: nextHistory,
-      last: { ...result, click: lonLat, nearest } as RoundResult & {
-        click: [number, number] | null
-        nearest?: [number, number] | null
-      },
-    })
-  }
+  }, [tick, phase.kind, turnStartedAt, perTurnMs, resolveRound])
 
   const advance = () => {
     if (phase.kind !== "feedback") return
@@ -258,18 +269,20 @@ function ActiveRound({
     })
   }
 
-  const timerPct = useMemo(() => {
-    if (phase.kind !== "playing") return 100
+  let timerPct = 100
+  if (phase.kind === "playing") {
+    void tick
     const elapsed = performance.now() - phase.turnStartedAt
-    return Math.max(0, 100 - (elapsed / phase.perTurnMs) * 100)
-  }, [tick, phase])
+    timerPct = Math.max(0, 100 - (elapsed / phase.perTurnMs) * 100)
+  }
 
   const marker =
     phase.kind === "feedback" && phase.last.click
       ? {
           click: phase.last.click,
           nearest:
-            (phase.last as { nearest?: [number, number] | null }).nearest ?? null,
+            (phase.last as { nearest?: [number, number] | null }).nearest ??
+            null,
           inside: phase.last.inside,
         }
       : null
@@ -322,7 +335,7 @@ function ActiveRound({
             size="lg"
             onClick={advance}
             autoFocus
-            className="group/next h-14 w-full justify-between gap-4 px-6 text-sm uppercase tracking-[0.3em] md:h-auto md:w-60"
+            className="group/next h-14 w-full justify-between gap-4 px-6 text-sm tracking-[0.3em] uppercase md:h-auto md:w-60"
           >
             <span>
               {phase.index + 1 >= phase.queue.length ? "Summary" : "Next round"}
@@ -337,7 +350,7 @@ function ActiveRound({
         </div>
       )}
       {phase.kind === "playing" && (
-        <p className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+        <p className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
           <span>Tap to pin</span>
           <span aria-hidden>·</span>
           <span>Drag to pan</span>
@@ -365,12 +378,12 @@ function Summary({
   return (
     <div className="space-y-12 py-4 md:py-8">
       <header className="space-y-6">
-        <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+        <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
           <span className="h-px w-6 bg-border" />
           Session complete
         </span>
         <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
-          <h2 className="font-serif text-7xl font-normal leading-none tabular-nums md:text-8xl">
+          <h2 className="font-serif text-7xl leading-none font-normal tabular-nums md:text-8xl">
             {phase.score}
           </h2>
           <dl className="grid grid-cols-3 gap-x-8 gap-y-1 text-xs">
@@ -388,10 +401,10 @@ function Summary({
 
       <section className="border-t border-border pt-8">
         <div className="mb-6 flex items-baseline justify-between">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
             Round by round
           </span>
-          <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60 tabular-nums">
+          <span className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
             {phase.history.length} round{phase.history.length === 1 ? "" : "s"}
           </span>
         </div>
@@ -401,11 +414,11 @@ function Summary({
               key={i}
               className="grid grid-cols-[auto_1fr_auto_auto] items-baseline gap-5 py-4"
             >
-              <span className="font-serif text-lg italic tabular-nums text-muted-foreground/60">
+              <span className="font-serif text-lg text-muted-foreground/60 italic tabular-nums">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="truncate text-sm">{h.country.name}</span>
-              <span className="text-[11px] uppercase tracking-[0.2em] tabular-nums text-muted-foreground">
+              <span className="text-[11px] tracking-[0.2em] text-muted-foreground uppercase tabular-nums">
                 {h.missed
                   ? "time up"
                   : h.inside
@@ -429,18 +442,24 @@ function Summary({
         <Button
           size="lg"
           onClick={onPlayAgain}
-          className="group/again gap-2 px-6 text-xs uppercase tracking-[0.3em]"
+          className="group/again gap-2 px-6 text-xs tracking-[0.3em] uppercase"
         >
           Play again
-          <span aria-hidden className="transition-transform group-hover/again:translate-x-1">
+          <span
+            aria-hidden
+            className="transition-transform group-hover/again:translate-x-1"
+          >
             →
           </span>
         </Button>
         <Link
           to="/"
-          className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
-          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+          <span
+            aria-hidden
+            className="transition-transform group-hover:-translate-x-0.5"
+          >
             ←
           </span>
           Atlas
@@ -453,11 +472,10 @@ function Summary({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="space-y-1">
-      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+      <dt className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
         {label}
       </dt>
       <dd className="font-serif text-lg font-normal tabular-nums">{value}</dd>
     </div>
   )
 }
-

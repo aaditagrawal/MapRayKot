@@ -27,8 +27,14 @@ function expandBounds(
   const [[x0, y0], [x1, y1]] = bounds
   const lonSpan = x1 - x0
   const latSpan = y1 - y0
-  const targetLonSpan = Math.max(lonSpan * (1 + EXPAND_FACTOR * 2), MIN_LON_SPAN)
-  const targetLatSpan = Math.max(latSpan * (1 + EXPAND_FACTOR * 2), MIN_LAT_SPAN)
+  const targetLonSpan = Math.max(
+    lonSpan * (1 + EXPAND_FACTOR * 2),
+    MIN_LON_SPAN
+  )
+  const targetLatSpan = Math.max(
+    latSpan * (1 + EXPAND_FACTOR * 2),
+    MIN_LAT_SPAN
+  )
   const padLon = (targetLonSpan - lonSpan) / 2
   const padLat = (targetLatSpan - latSpan) / 2
   const ex0 = Math.max(-180, x0 - padLon)
@@ -98,7 +104,13 @@ export function CountryInset({ targetId, className }: Props) {
       className={cn("select-none", className)}
       pointerEvents="none"
     >
-      <rect x={0} y={0} width={VB_W} height={VB_H} fill="var(--color-map-ocean)" />
+      <rect
+        x={0}
+        y={0}
+        width={VB_W}
+        height={VB_H}
+        fill="var(--color-map-ocean)"
+      />
       {paths.map(({ id, d }) =>
         d ? (
           <CountryPath

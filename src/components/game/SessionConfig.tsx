@@ -47,12 +47,12 @@ export function SessionConfig({
   return (
     <div className="space-y-12 py-4 md:py-8">
       <header className="space-y-5">
-        <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+        <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
           <span className="h-px w-6 bg-border" />
           New session
         </span>
-        <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-tight md:text-5xl">
-          <em className="italic text-primary">{accent}</em>
+        <h2 className="font-serif text-4xl leading-[1.05] font-normal tracking-tight md:text-5xl">
+          <em className="text-primary italic">{accent}</em>
           {rest && ` ${rest}`}.
         </h2>
         <p className="max-w-prose text-sm leading-relaxed text-muted-foreground md:text-base">
@@ -68,16 +68,16 @@ export function SessionConfig({
             <fieldset key={g.key} className="space-y-4">
               <div className="flex items-baseline justify-between gap-4">
                 <legend className="flex items-baseline gap-3">
-                  <span className="font-serif text-xl italic text-muted-foreground/70">
+                  <span className="font-serif text-xl text-muted-foreground/70 italic">
                     {`${String(idx + 1).padStart(2, "0")}.`}
                   </span>
                   <span className="text-sm font-medium tracking-tight">
                     {g.label}
                   </span>
                 </legend>
-                <span className="font-serif text-base tabular-nums text-muted-foreground">
+                <span className="font-serif text-base text-muted-foreground tabular-nums">
                   {value}
-                  <span className="ml-1 text-[10px] uppercase tracking-[0.2em]">
+                  <span className="ml-1 text-[10px] tracking-[0.2em] uppercase">
                     {g.unit}
                   </span>
                 </span>
@@ -94,7 +94,7 @@ export function SessionConfig({
                         setCustom((cu) => ({ ...cu, [g.key]: false }))
                       }}
                       className={cn(
-                        "h-9 min-w-[3.25rem] border px-3 text-xs uppercase tracking-[0.18em] transition-colors",
+                        "h-9 min-w-[3.25rem] border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
                         active
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
@@ -106,9 +106,11 @@ export function SessionConfig({
                 })}
                 <button
                   type="button"
-                  onClick={() => setCustom((cu) => ({ ...cu, [g.key]: !cu[g.key] }))}
+                  onClick={() =>
+                    setCustom((cu) => ({ ...cu, [g.key]: !cu[g.key] }))
+                  }
                   className={cn(
-                    "h-9 min-w-[3.25rem] border px-3 text-xs uppercase tracking-[0.18em] transition-colors",
+                    "h-9 min-w-[3.25rem] border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
                     isCustom
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
@@ -128,7 +130,10 @@ export function SessionConfig({
                     if (Number.isFinite(n)) {
                       setValues((v) => ({
                         ...v,
-                        [g.key]: Math.min(g.max, Math.max(g.min, Math.round(n))),
+                        [g.key]: Math.min(
+                          g.max,
+                          Math.max(g.min, Math.round(n))
+                        ),
                       }))
                     }
                   }}
@@ -143,11 +148,14 @@ export function SessionConfig({
       <div className="border-t border-border pt-8">
         <Button
           size="lg"
-          className="group/cta w-full justify-between text-xs uppercase tracking-[0.3em]"
+          className="group/cta w-full justify-between text-xs tracking-[0.3em] uppercase"
           onClick={() => onStart(values)}
         >
           <span>{ctaLabel}</span>
-          <span aria-hidden className="transition-transform group-hover/cta:translate-x-1">
+          <span
+            aria-hidden
+            className="transition-transform group-hover/cta:translate-x-1"
+          >
             →
           </span>
         </Button>

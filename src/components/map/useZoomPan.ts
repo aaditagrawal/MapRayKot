@@ -181,7 +181,11 @@ export function useZoomPan(opts: UseZoomPanOpts) {
         return
       }
 
-      if (pan.current && pointers.current.size === 1 && pan.current.pointerId === e.pointerId) {
+      if (
+        pan.current &&
+        pointers.current.size === 1 &&
+        pan.current.pointerId === e.pointerId
+      ) {
         const scaleX = vbW / r.width
         const scaleY = vbH / r.height
         const dxClient = e.clientX - pan.current.startX

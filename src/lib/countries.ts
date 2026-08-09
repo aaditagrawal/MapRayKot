@@ -35,7 +35,10 @@ export const COUNTRIES_BY_ID: ReadonlyMap<string, Country> = new Map(
   COUNTRIES.map((c) => [c.id, c])
 )
 
-export function randomCountries(n: number, rng: () => number = Math.random): Array<Country> {
+export function randomCountries(
+  n: number,
+  rng: () => number = Math.random
+): Array<Country> {
   const pool = [...COUNTRIES]
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1))
@@ -44,7 +47,10 @@ export function randomCountries(n: number, rng: () => number = Math.random): Arr
   return pool.slice(0, Math.min(n, pool.length))
 }
 
-export function shuffle<T>(arr: ReadonlyArray<T>, rng: () => number = Math.random): Array<T> {
+export function shuffle<T>(
+  arr: ReadonlyArray<T>,
+  rng: () => number = Math.random
+): Array<T> {
   const out = [...arr]
   for (let i = out.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1))

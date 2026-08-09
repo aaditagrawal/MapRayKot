@@ -81,7 +81,10 @@ function NamePage() {
   if (phase.kind === "done") {
     return (
       <Shell>
-        <Summary phase={phase} onPlayAgain={() => setPhase({ kind: "setup" })} />
+        <Summary
+          phase={phase}
+          onPlayAgain={() => setPhase({ kind: "setup" })}
+        />
       </Shell>
     )
   }
@@ -99,15 +102,18 @@ function Shell({ children }: { children: React.ReactNode }) {
       <nav className="mb-8 flex items-center justify-between md:mb-12">
         <Link
           to="/"
-          className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
-          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+          <span
+            aria-hidden
+            className="transition-transform group-hover:-translate-x-0.5"
+          >
             ←
           </span>
           <span>Atlas</span>
         </Link>
-        <span className="inline-flex items-baseline gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
-          <span className="font-serif text-base italic normal-case tracking-normal text-muted-foreground/70">
+        <span className="inline-flex items-baseline gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
+          <span className="font-serif text-base tracking-normal text-muted-foreground/70 normal-case italic">
             II.
           </span>
           Name
@@ -135,7 +141,10 @@ function Active({
 
   const elapsedMs = tick >= 0 ? performance.now() - phase.startedAt : 0
   const timerPct = Math.max(0, 100 - (elapsedMs / phase.totalMs) * 100)
-  const remainingSec = Math.max(0, Math.ceil((phase.totalMs - elapsedMs) / 1000))
+  const remainingSec = Math.max(
+    0,
+    Math.ceil((phase.totalMs - elapsedMs) / 1000)
+  )
 
   // End of session
   useEffect(() => {
@@ -190,9 +199,13 @@ function Active({
       outcome.country.id,
     ])
     const solved =
-      outcome.kind === "solved" ? [...phase.solved, outcome.country] : phase.solved
+      outcome.kind === "solved"
+        ? [...phase.solved, outcome.country]
+        : phase.solved
     const skipped =
-      outcome.kind === "skipped" ? [...phase.skipped, outcome.country] : phase.skipped
+      outcome.kind === "skipped"
+        ? [...phase.skipped, outcome.country]
+        : phase.skipped
     let next = phase.cursor + 1
     while (next < phase.queue.length && usedIds.has(phase.queue[next].id)) {
       next++
@@ -262,10 +275,10 @@ function Active({
         <div className="flex flex-col gap-5">
           <section className="border border-border bg-card">
             <div className="flex items-baseline justify-between border-b border-border/60 px-4 py-3">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+              <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
                 Region
               </span>
-              <span className="font-serif text-sm italic text-muted-foreground/70">
+              <span className="font-serif text-sm text-muted-foreground/70 italic">
                 close-up
               </span>
             </div>
@@ -276,10 +289,10 @@ function Active({
 
           <section className="border border-border bg-card">
             <div className="flex items-baseline justify-between border-b border-border/60 px-4 py-3">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+              <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
                 Your answer
               </span>
-              <span className="font-serif text-sm italic text-muted-foreground/70">
+              <span className="font-serif text-sm text-muted-foreground/70 italic">
                 +4 / −1
               </span>
             </div>
@@ -291,17 +304,17 @@ function Active({
           <Button
             variant="outline"
             onClick={onSkip}
-            className="group/skip h-10 justify-between text-xs uppercase tracking-[0.3em]"
+            className="group/skip h-10 justify-between text-xs tracking-[0.3em] uppercase"
           >
             <span>Skip</span>
-            <span className="font-serif text-base italic text-muted-foreground/70 normal-case tracking-normal">
+            <span className="font-serif text-base tracking-normal text-muted-foreground/70 normal-case italic">
               −1
             </span>
           </Button>
 
           {phase.flash && (
             <div className="border border-destructive/50 bg-destructive/[0.05] px-4 py-3">
-              <div className="text-[10px] uppercase tracking-[0.3em] text-destructive/80">
+              <div className="text-[10px] tracking-[0.3em] text-destructive/80 uppercase">
                 Skipped
               </div>
               <div className="mt-1 font-serif text-xl italic">
@@ -312,7 +325,7 @@ function Active({
         </div>
       </div>
 
-      <p className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+      <p className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
         <span>Type the highlighted country</span>
         <span aria-hidden>·</span>
         <span>Enter submits</span>
@@ -332,16 +345,17 @@ function Summary({
 }) {
   const score = phase.solved.length * 4 - phase.skipped.length
   const total = phase.solved.length + phase.skipped.length
-  const accuracy = total > 0 ? Math.round((phase.solved.length / total) * 100) : 0
+  const accuracy =
+    total > 0 ? Math.round((phase.solved.length / total) * 100) : 0
   return (
     <div className="space-y-12 py-4 md:py-8">
       <header className="space-y-6">
-        <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+        <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
           <span className="h-px w-6 bg-border" />
           Session complete
         </span>
         <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
-          <h2 className="font-serif text-7xl font-normal leading-none tabular-nums md:text-8xl">
+          <h2 className="font-serif text-7xl leading-none font-normal tabular-nums md:text-8xl">
             {score}
           </h2>
           <dl className="grid grid-cols-2 gap-x-8 gap-y-1 text-xs sm:grid-cols-4">
@@ -359,10 +373,10 @@ function Summary({
       {phase.skipped.length > 0 && (
         <section className="border-t border-border pt-8">
           <div className="mb-5 flex items-baseline justify-between">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+            <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
               Missed
             </span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60 tabular-nums">
+            <span className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
               {phase.skipped.length}
             </span>
           </div>
@@ -370,7 +384,7 @@ function Summary({
             {phase.skipped.map((c) => (
               <li
                 key={c.id}
-                className="border border-destructive/30 px-3 py-1 font-serif text-sm italic text-muted-foreground"
+                className="border border-destructive/30 px-3 py-1 font-serif text-sm text-muted-foreground italic"
               >
                 {c.name}
               </li>
@@ -383,18 +397,24 @@ function Summary({
         <Button
           size="lg"
           onClick={onPlayAgain}
-          className="group/again gap-2 px-6 text-xs uppercase tracking-[0.3em]"
+          className="group/again gap-2 px-6 text-xs tracking-[0.3em] uppercase"
         >
           Play again
-          <span aria-hidden className="transition-transform group-hover/again:translate-x-1">
+          <span
+            aria-hidden
+            className="transition-transform group-hover/again:translate-x-1"
+          >
             →
           </span>
         </Button>
         <Link
           to="/"
-          className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
-          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+          <span
+            aria-hidden
+            className="transition-transform group-hover:-translate-x-0.5"
+          >
             ←
           </span>
           Atlas
@@ -407,7 +427,7 @@ function Summary({
 function NameStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="space-y-1">
-      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+      <dt className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
         {label}
       </dt>
       <dd className="font-serif text-lg font-normal tabular-nums">{value}</dd>

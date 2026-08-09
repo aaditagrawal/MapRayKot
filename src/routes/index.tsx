@@ -30,7 +30,7 @@ function Hero() {
   return (
     <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 py-24">
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <AtlasSilhouette className="w-[180%] max-w-none text-primary/[0.07] dark:text-primary/[0.10] sm:w-[140%] md:w-[120%] lg:w-[105%]" />
+        <AtlasSilhouette className="w-[180%] max-w-none text-primary/[0.07] sm:w-[140%] md:w-[120%] lg:w-[105%] dark:text-primary/[0.10]" />
       </div>
       <div
         className="pointer-events-none absolute inset-0"
@@ -41,24 +41,24 @@ function Hero() {
       />
 
       <div className="relative z-10 flex max-w-3xl flex-col items-center text-center">
-        <span className="mb-10 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground animate-in fade-in duration-300 fill-mode-both">
+        <span className="mb-10 inline-flex animate-in items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase duration-300 fill-mode-both fade-in">
           <span className="h-px w-8 bg-border" />
           MapRayKot · An Atlas Game
           <span className="h-px w-8 bg-border" />
         </span>
 
-        <h1 className="font-serif text-5xl font-normal leading-[1.02] tracking-tight animate-in fade-in slide-in-from-bottom-1 duration-500 delay-75 fill-mode-both sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+        <h1 className="animate-in font-serif text-5xl leading-[1.02] font-normal tracking-tight delay-75 duration-500 fill-mode-both fade-in slide-in-from-bottom-1 sm:text-6xl md:text-7xl lg:text-[5.5rem]">
           Know the world,
           <br />
-          <em className="italic text-primary">one country</em> at a time.
+          <em className="text-primary italic">one country</em> at a time.
         </h1>
 
-        <p className="mt-8 max-w-md text-balance text-sm leading-relaxed text-muted-foreground animate-in fade-in duration-500 delay-200 fill-mode-both md:text-base">
+        <p className="mt-8 max-w-md animate-in text-sm leading-relaxed text-balance text-muted-foreground delay-200 duration-500 fill-mode-both fade-in md:text-base">
           Pin it on the map, or name it on sight. Two quiet ways to learn the
           borders you've forgotten.
         </p>
 
-        <div className="mt-12 flex items-center gap-7 text-xs uppercase tracking-[0.3em] animate-in fade-in slide-in-from-bottom-1 duration-500 delay-300 fill-mode-both">
+        <div className="mt-12 flex animate-in items-center gap-7 text-xs tracking-[0.3em] uppercase delay-300 duration-500 fill-mode-both fade-in slide-in-from-bottom-1">
           <Link
             to="/play/locate"
             className="group inline-flex items-center gap-2 text-foreground transition-colors hover:text-primary"
@@ -66,7 +66,12 @@ function Hero() {
             <span className="border-b border-foreground/40 pb-1 transition-colors group-hover:border-primary">
               Locate
             </span>
-            <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+            <span
+              aria-hidden
+              className="transition-transform group-hover:translate-x-1"
+            >
+              →
+            </span>
           </Link>
           <span aria-hidden className="h-3 w-px bg-border" />
           <Link
@@ -76,12 +81,17 @@ function Hero() {
             <span className="border-b border-foreground/40 pb-1 transition-colors group-hover:border-primary">
               Name
             </span>
-            <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+            <span
+              aria-hidden
+              className="transition-transform group-hover:translate-x-1"
+            >
+              →
+            </span>
           </Link>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.4em] text-muted-foreground/60 animate-in fade-in duration-500 delay-500 fill-mode-both">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-in text-[10px] tracking-[0.4em] text-muted-foreground/60 uppercase delay-500 duration-500 fill-mode-both fade-in">
         scroll for your runs
       </div>
     </section>
@@ -92,11 +102,11 @@ function Modes() {
   return (
     <section className="border-t border-border">
       <div className="mx-auto max-w-5xl px-6 py-20 text-center md:py-28">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+        <span className="text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
           Two modes
         </span>
-        <h2 className="mt-4 font-serif text-4xl font-normal leading-tight tracking-tight md:text-5xl">
-          Choose how you <em className="italic text-primary">wander</em>.
+        <h2 className="mt-4 font-serif text-4xl leading-tight font-normal tracking-tight md:text-5xl">
+          Choose how you <em className="text-primary italic">wander</em>.
         </h2>
       </div>
       <div className="grid border-y border-border md:grid-cols-2">
@@ -140,24 +150,36 @@ function ModeBlock({
       to={to}
       className={cn(
         "group relative flex flex-col gap-10 px-6 py-16 transition-colors hover:bg-muted/40 md:gap-14 md:px-12 md:py-20",
-        align === "end" ? "md:items-end md:text-right" : "md:items-start md:text-left",
+        align === "end"
+          ? "md:items-end md:text-right"
+          : "md:items-start md:text-left",
         divider && "border-t border-border md:border-t-0 md:border-l"
       )}
     >
-      <div className={cn("flex items-baseline gap-4", align === "end" && "md:flex-row-reverse")}>
-        <span className="font-serif text-2xl italic text-muted-foreground/60">
+      <div
+        className={cn(
+          "flex items-baseline gap-4",
+          align === "end" && "md:flex-row-reverse"
+        )}
+      >
+        <span className="font-serif text-2xl text-muted-foreground/60 italic">
           {numeral}
         </span>
-        <h3 className="font-serif text-5xl font-normal leading-none tracking-tight transition-colors group-hover:text-primary md:text-6xl">
+        <h3 className="font-serif text-5xl leading-none font-normal tracking-tight transition-colors group-hover:text-primary md:text-6xl">
           {title}
         </h3>
       </div>
       <p className="max-w-sm text-sm leading-relaxed text-muted-foreground md:text-base">
         {body}
       </p>
-      <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-primary">
+      <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors group-hover:text-primary">
         Begin
-        <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+        <span
+          aria-hidden
+          className="transition-transform group-hover:translate-x-1"
+        >
+          →
+        </span>
       </span>
     </Link>
   )
@@ -173,11 +195,11 @@ function History({
   return (
     <section className="border-b border-border">
       <div className="mx-auto max-w-5xl px-6 py-20 text-center md:py-28">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+        <span className="text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
           Your runs
         </span>
-        <h2 className="mt-4 font-serif text-4xl font-normal leading-tight tracking-tight md:text-5xl">
-          A <em className="italic text-primary">quiet</em> ladder.
+        <h2 className="mt-4 font-serif text-4xl leading-tight font-normal tracking-tight md:text-5xl">
+          A <em className="text-primary italic">quiet</em> ladder.
         </h2>
       </div>
       <div className="mx-auto grid max-w-5xl border-t border-border md:grid-cols-2">
@@ -226,17 +248,19 @@ function Ladder({
       )}
     >
       <div className="mb-8 flex items-baseline justify-between">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+        <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
           {label}
         </span>
         {rows.length > 0 && (
-          <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60 tabular-nums">
+          <span className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
             {rows.length} run{rows.length === 1 ? "" : "s"}
           </span>
         )}
       </div>
       {rows.length === 0 ? (
-        <p className="font-serif text-lg italic text-muted-foreground">{empty}</p>
+        <p className="font-serif text-lg text-muted-foreground italic">
+          {empty}
+        </p>
       ) : (
         <ol className="space-y-0">
           {rows.map((row, i) => (
@@ -255,14 +279,14 @@ function Ladder({
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0">
-                <div className="font-serif text-3xl font-normal leading-none tabular-nums md:text-4xl">
+                <div className="font-serif text-3xl leading-none font-normal tabular-nums md:text-4xl">
                   {row.score}
                 </div>
                 <div className="mt-2 truncate text-[11px] text-muted-foreground">
                   {row.meta}
                 </div>
               </div>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 tabular-nums">
+              <span className="text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase tabular-nums">
                 {timeAgo(row.at)}
               </span>
             </li>
@@ -275,7 +299,7 @@ function Ladder({
 
 function Colophon() {
   return (
-    <footer className="px-6 py-10 text-center text-[10px] uppercase tracking-[0.4em] text-muted-foreground/70">
+    <footer className="px-6 py-10 text-center text-[10px] tracking-[0.4em] text-muted-foreground/70 uppercase">
       <span className="inline-flex items-center gap-3">
         <span className="h-px w-6 bg-border" />
         End of the atlas

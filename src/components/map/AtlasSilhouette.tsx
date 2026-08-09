@@ -26,7 +26,7 @@ export function AtlasSilhouette({ className }: { className?: string }) {
       viewBox={`0 0 ${VB_W} ${VB_H}`}
       xmlns="http://www.w3.org/2000/svg"
       className={cn(
-        "pointer-events-none select-none animate-in fade-in duration-700 fill-mode-both",
+        "pointer-events-none animate-in duration-700 fill-mode-both select-none fade-in",
         className
       )}
       aria-hidden

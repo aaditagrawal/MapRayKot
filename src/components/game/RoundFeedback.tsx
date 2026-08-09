@@ -23,8 +23,7 @@ export function RoundFeedback({ country, km, inside, points, missed }: Props) {
         ? "mid"
         : "bad"
   const toneCls = {
-    good:
-      "border-[color-mix(in_oklab,var(--color-map-correct)_55%,transparent)] bg-[color-mix(in_oklab,var(--color-map-correct)_8%,transparent)]",
+    good: "border-[color-mix(in_oklab,var(--color-map-correct)_55%,transparent)] bg-[color-mix(in_oklab,var(--color-map-correct)_8%,transparent)]",
     mid: "border-primary/40 bg-primary/[0.04]",
     bad: "border-destructive/40 bg-destructive/[0.04]",
     muted: "border-border/70 bg-muted/20",
@@ -36,20 +35,20 @@ export function RoundFeedback({ country, km, inside, points, missed }: Props) {
   return (
     <div className={cn("border p-5", toneCls)}>
       <div className="flex items-baseline justify-between gap-3">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+        <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
           {eyebrow}
         </span>
-        <span className="font-serif text-base italic text-muted-foreground">
+        <span className="font-serif text-base text-muted-foreground italic">
           {country}
         </span>
       </div>
       <div className="mt-3 flex items-baseline justify-between gap-3">
-        <span className="font-serif text-3xl font-normal tabular-nums leading-none md:text-4xl">
+        <span className="font-serif text-3xl leading-none font-normal tabular-nums md:text-4xl">
           {headline}
         </span>
         <span
           className={cn(
-            "font-serif text-3xl font-normal tabular-nums leading-none md:text-4xl",
+            "font-serif text-3xl leading-none font-normal tabular-nums md:text-4xl",
             points > 0 ? "text-primary" : "text-muted-foreground/70"
           )}
         >

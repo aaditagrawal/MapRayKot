@@ -10,22 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PlayNameRouteImport } from './routes/play.name'
 import { Route as PlayLocateRouteImport } from './routes/play.locate'
+import { Route as PlayNameRouteImport } from './routes/play.name'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlayNameRoute = PlayNameRouteImport.update({
-  id: '/play/name',
-  path: '/play/name',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PlayLocateRoute = PlayLocateRouteImport.update({
   id: '/play/locate',
   path: '/play/locate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayNameRoute = PlayNameRouteImport.update({
+  id: '/play/name',
+  path: '/play/name',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -68,18 +68,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/play/name': {
-      id: '/play/name'
-      path: '/play/name'
-      fullPath: '/play/name'
-      preLoaderRoute: typeof PlayNameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/play/locate': {
       id: '/play/locate'
       path: '/play/locate'
       fullPath: '/play/locate'
       preLoaderRoute: typeof PlayLocateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play/name': {
+      id: '/play/name'
+      path: '/play/name'
+      fullPath: '/play/name'
+      preLoaderRoute: typeof PlayNameRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

@@ -45,7 +45,9 @@ export function WorldMap(props: Props) {
         role="alert"
       >
         <p className="text-sm text-foreground">Couldn't load the world map.</p>
-        <p className="max-w-md text-xs text-muted-foreground">{error.message}</p>
+        <p className="max-w-md text-xs text-muted-foreground">
+          {error.message}
+        </p>
         <Button size="sm" onClick={retry}>
           Try again
         </Button>
@@ -185,16 +187,24 @@ function WorldMapInner({
         viewBox={`0 0 ${VB_W} ${VB_H}`}
         xmlns="http://www.w3.org/2000/svg"
         className={cn(
-          "block h-auto w-full touch-none select-none overscroll-contain",
+          "block h-auto w-full touch-none overscroll-contain select-none",
           crosshair ? "cursor-crosshair" : "cursor-grab active:cursor-grabbing"
         )}
         {...svgHandlers}
         onPointerDown={onSvgPointerDown}
         onPointerUp={onSvgPointerUp}
       >
-        <rect x={0} y={0} width={VB_W} height={VB_H} fill="var(--color-map-ocean)" />
+        <rect
+          x={0}
+          y={0}
+          width={VB_W}
+          height={VB_H}
+          fill="var(--color-map-ocean)"
+        />
 
-        <g transform={`translate(${transform.tx} ${transform.ty}) scale(${transform.k})`}>
+        <g
+          transform={`translate(${transform.tx} ${transform.ty}) scale(${transform.k})`}
+        >
           {!hideGraticule && <Graticule path={path} />}
           {paths.map(({ id, d }) => (
             <CountryPath
@@ -204,7 +214,8 @@ function WorldMapInner({
               interactive={!onLocateClick}
               onHover={
                 !onLocateClick && id
-                  ? (h) => setHoverId(h ? id : (curr) => (curr === id ? null : curr))
+                  ? (h) =>
+                      setHoverId(h ? id : (curr) => (curr === id ? null : curr))
                   : undefined
               }
             />
@@ -271,7 +282,9 @@ function WorldMapInner({
           variant="outline"
           aria-label="Reset view"
           onClick={reset}
-          disabled={transform.k === 1 && transform.tx === 0 && transform.ty === 0}
+          disabled={
+            transform.k === 1 && transform.tx === 0 && transform.ty === 0
+          }
         >
           ⟲
         </Button>

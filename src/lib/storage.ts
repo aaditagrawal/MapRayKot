@@ -2,7 +2,9 @@ const KEY_PREFIX = "maprayot:"
 const HISTORY_CAP = 20
 
 function isClient(): boolean {
-  return typeof window !== "undefined" && typeof window.localStorage !== "undefined"
+  return (
+    typeof window !== "undefined" && typeof window.localStorage !== "undefined"
+  )
 }
 
 export function readJSON<T>(key: string, fallback: T): T {

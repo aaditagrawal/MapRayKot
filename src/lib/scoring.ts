@@ -33,9 +33,12 @@ function pointSegDistKm(
   b: [number, number]
 ): [number, [number, number]] {
   const latScale = Math.cos(toRad((a[1] + b[1]) / 2))
-  const ax = a[0] * latScale, ay = a[1]
-  const bx = b[0] * latScale, by = b[1]
-  const px = p[0] * latScale, py = p[1]
+  const ax = a[0] * latScale,
+    ay = a[1]
+  const bx = b[0] * latScale,
+    by = b[1]
+  const px = p[0] * latScale,
+    py = p[1]
   const dx = bx - ax
   const dy = by - ay
   const denom = dx * dx + dy * dy

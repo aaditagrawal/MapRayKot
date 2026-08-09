@@ -77,9 +77,7 @@ function fixWinding(coords: MPCoords): MPCoords {
 
 function main() {
   console.log("[build-world] loading world-atlas…")
-  const worldTopo = JSON.parse(
-    readFileSync(worldAtlasPath, "utf8")
-  ) as Topology
+  const worldTopo = JSON.parse(readFileSync(worldAtlasPath, "utf8")) as Topology
   const fc = feature(
     worldTopo,
     worldTopo.objects.countries as GeometryCollection
@@ -87,7 +85,10 @@ function main() {
 
   // Patch Kosovo (no id in world-atlas) with synthetic "-99".
   for (const f of fc.features) {
-    if (!f.id && (f.properties as { name?: string } | null)?.name === "Kosovo") {
+    if (
+      !f.id &&
+      (f.properties as { name?: string } | null)?.name === "Kosovo"
+    ) {
       f.id = "-99"
     }
   }

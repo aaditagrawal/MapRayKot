@@ -2,14 +2,14 @@ import { memo } from "react"
 
 type Variant = "idle" | "hover" | "target" | "correct" | "wrong" | "dim"
 
-const FILL: Record<Variant, string> = {
+const FILL = {
   idle: "var(--color-map-land)",
   hover: "var(--color-map-land-hover)",
   target: "var(--color-map-target)",
   correct: "var(--color-map-correct)",
   wrong: "var(--color-map-wrong)",
   dim: "color-mix(in oklab, var(--color-map-land) 70%, var(--color-map-ocean) 30%)",
-}
+} satisfies Record<Variant, string>
 
 type Props = {
   d: string

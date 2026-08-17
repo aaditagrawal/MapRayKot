@@ -7,7 +7,7 @@ import {
   geoPath,
 } from "d3-geo"
 import type { GeoPermissibleObjects, GeoProjection } from "d3-geo"
-import type { Feature, FeatureCollection, MultiPolygon, Polygon } from "geojson"
+import type { Feature, MultiPolygon, Polygon } from "geojson"
 
 export type CountryFeature = Feature<Polygon | MultiPolygon, { name?: string }>
 
@@ -26,11 +26,14 @@ export function loadWorld(): Promise<WorldData> {
     const res = await fetch("/world.json")
     if (!res.ok)
       throw new Error(`failed to load world data (HTTP ${res.status})`)
-    const fc = (await res.json()) as FeatureCollection<
-      Polygon | MultiPolygon,
-      { name?: string }
-    >
-    const features = fc.features as Array<CountryFeature>
+    const payload = await res.json()
+    // `/world.json` is a build artifact written by scripts/build-world.ts, which
+    // emits only Polygon/MultiPolygon country features. Reject anything that is
+    // not the expected FeatureCollection before the rest of the app relies on it.
+    if (!Array.isArray(payload?.features)) {
+      throw new Error("world data is not a FeatureCollection")
+    }
+    const features: Array<CountryFeature> = payload.features
     const featuresById = new Map<string, CountryFeature>()
     for (const f of features) {
       if (f.id != null) featuresById.set(String(f.id), f)
@@ -69,17 +72,18 @@ export function useWorld(): WorldState {
     }
     setLoading(true)
     setError(null)
-    loadWorld()
-      .then((d) => {
+    void (async () => {
+      try {
+        const d = await loadWorld()
         if (cancelled) return
         setData(d)
-        setLoading(false)
-      })
-      .catch((err: unknown) => {
+      } catch (err) {
         if (cancelled) return
         setError(err instanceof Error ? err : new Error(String(err)))
-        setLoading(false)
-      })
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
     return () => {
       cancelled = true
     }
@@ -90,7 +94,7 @@ export function useWorld(): WorldState {
   return { data, error, loading, retry }
 }
 
-if (typeof window !== "undefined") {
+if ("window" in globalThis) {
   void loadWorld().catch(() => {
     /* surfaced via useWorld() */
   })

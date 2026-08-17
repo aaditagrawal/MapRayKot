@@ -2,29 +2,55 @@ const KEY_PREFIX = "maprayot:"
 const HISTORY_CAP = 20
 
 function isClient(): boolean {
-  return (
-    typeof window !== "undefined" && typeof window.localStorage !== "undefined"
-  )
+  return "localStorage" in globalThis
 }
 
-export function readJSON<T>(key: string, fallback: T): T {
-  if (!isClient()) return fallback
+/**
+ * Raw JSON read. localStorage is user-editable and survives schema changes, so
+ * the result is untrusted — decode it before letting it reach the UI.
+ */
+function readStored(key: string) {
+  if (!isClient()) return null
   try {
     const raw = window.localStorage.getItem(KEY_PREFIX + key)
-    if (raw == null) return fallback
-    return JSON.parse(raw) as T
+    return raw == null ? null : JSON.parse(raw)
   } catch {
-    return fallback
+    return null
   }
 }
 
-export function writeJSON<T>(key: string, value: T): void {
+function writeStored(
+  key: string,
+  value: Array<LocateRun> | Array<NameRun>
+): void {
   if (!isClient()) return
   try {
     window.localStorage.setItem(KEY_PREFIX + key, JSON.stringify(value))
   } catch {
     /* quota / private mode */
   }
+}
+
+/**
+ * The stored entries for `key`, falling back to the pre-history single-best
+ * `legacyKey` when no history exists yet. Entries are still undecoded here.
+ */
+function storedEntries(key: string, legacyKey: string) {
+  const stored = readStored(key)
+  if (Array.isArray(stored) && stored.length > 0) return stored
+  const legacy = readStored(legacyKey)
+  return legacy == null ? [] : [legacy]
+}
+
+/**
+ * Accepts a stored field only when it already is a finite JSON number.
+ * `Number.isFinite` does not coerce, so `null`, `""` and `true` are rejected
+ * rather than silently becoming 0 or 1.
+ */
+function finiteOrNull(
+  value: boolean | number | string | null | undefined
+): number | null {
+  return Number.isFinite(value) ? Number(value) : null
 }
 
 export type LocateRun = {
@@ -45,41 +71,48 @@ export type NameRun = {
 export type LocateBest = LocateRun
 export type NameBest = NameRun
 
-function pushRun<T extends { score: number; at: number }>(
-  key: string,
-  legacyKey: string,
-  run: T
-): Array<T> {
-  const existing = readJSON<Array<T>>(key, [])
-  const seeded =
-    existing.length === 0 ? maybeSeedFromLegacy<T>(legacyKey) : existing
-  const next = [...seeded, run]
-    .sort((a, b) => b.score - a.score || b.at - a.at)
-    .slice(0, HISTORY_CAP)
-  writeJSON(key, next)
-  return next
-}
-
-function maybeSeedFromLegacy<T>(legacyKey: string): Array<T> {
-  const legacy = readJSON<T | null>(legacyKey, null)
-  return legacy ? [legacy] : []
-}
-
-function readHistory<T extends { score: number; at: number }>(
-  key: string,
-  legacyKey: string
-): Array<T> {
-  const list = readJSON<Array<T>>(key, [])
-  if (list.length > 0) return list
-  return maybeSeedFromLegacy<T>(legacyKey)
+function byScoreThenRecency<T extends { score: number; at: number }>(
+  a: T,
+  b: T
+): number {
+  return b.score - a.score || b.at - a.at
 }
 
 export function historyLocate(): Array<LocateRun> {
-  return readHistory<LocateRun>("history-locate", "best-locate")
+  const runs: Array<LocateRun> = []
+  for (const entry of storedEntries("history-locate", "best-locate")) {
+    const score = finiteOrNull(entry?.score)
+    const turns = finiteOrNull(entry?.turns)
+    const perTurn = finiteOrNull(entry?.perTurn)
+    const at = finiteOrNull(entry?.at)
+    if (score === null || turns === null || perTurn === null || at === null) {
+      continue
+    }
+    runs.push({ score, turns, perTurn, at })
+  }
+  return runs.sort(byScoreThenRecency)
 }
 
 export function historyName(): Array<NameRun> {
-  return readHistory<NameRun>("history-name", "best-name")
+  const runs: Array<NameRun> = []
+  for (const entry of storedEntries("history-name", "best-name")) {
+    const score = finiteOrNull(entry?.score)
+    const correct = finiteOrNull(entry?.correct)
+    const skipped = finiteOrNull(entry?.skipped)
+    const totalSeconds = finiteOrNull(entry?.totalSeconds)
+    const at = finiteOrNull(entry?.at)
+    if (
+      score === null ||
+      correct === null ||
+      skipped === null ||
+      totalSeconds === null ||
+      at === null
+    ) {
+      continue
+    }
+    runs.push({ score, correct, skipped, totalSeconds, at })
+  }
+  return runs.sort(byScoreThenRecency)
 }
 
 export function bestLocate(): LocateRun | null {
@@ -91,11 +124,17 @@ export function bestName(): NameRun | null {
 }
 
 export function saveLocateBest(next: LocateRun): LocateRun {
-  const list = pushRun<LocateRun>("history-locate", "best-locate", next)
+  const list = [...historyLocate(), next]
+    .sort(byScoreThenRecency)
+    .slice(0, HISTORY_CAP)
+  writeStored("history-locate", list)
   return list[0] ?? next
 }
 
 export function saveNameBest(next: NameRun): NameRun {
-  const list = pushRun<NameRun>("history-name", "best-name", next)
+  const list = [...historyName(), next]
+    .sort(byScoreThenRecency)
+    .slice(0, HISTORY_CAP)
+  writeStored("history-name", list)
   return list[0] ?? next
 }

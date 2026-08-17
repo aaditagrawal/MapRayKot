@@ -29,8 +29,8 @@ export function haversineKm(a: [number, number], b: [number, number]): number {
  */
 function pointSegDistKm(
   p: [number, number],
-  a: [number, number],
-  b: [number, number]
+  a: Position,
+  b: Position
 ): [number, [number, number]] {
   const latScale = Math.cos(toRad((a[1] + b[1]) / 2))
   const ax = a[0] * latScale,
@@ -59,11 +59,18 @@ function* iterRings(feature: CountryFeature): Generator<Array<Position>> {
   }
 }
 
+/** How far a click landed from a country: inside it, or the km to its border. */
+export type FeatureDistance = {
+  inside: boolean
+  km: number
+  nearest: [number, number]
+}
+
 /** Returns { inside, km, nearest } — km=0 and nearest=click when inside. */
 export function distanceToFeature(
   click: [number, number],
   feature: CountryFeature
-): { inside: boolean; km: number; nearest: [number, number] } {
+): FeatureDistance {
   if (geoContains(feature, click)) {
     return { inside: true, km: 0, nearest: click }
   }
@@ -71,9 +78,7 @@ export function distanceToFeature(
   let bestPt: [number, number] = click
   for (const ring of iterRings(feature)) {
     for (let i = 0; i < ring.length - 1; i++) {
-      const a = ring[i] as [number, number]
-      const b = ring[i + 1] as [number, number]
-      const [km, pt] = pointSegDistKm(click, a, b)
+      const [km, pt] = pointSegDistKm(click, ring[i], ring[i + 1])
       if (km < best) {
         best = km
         bestPt = pt

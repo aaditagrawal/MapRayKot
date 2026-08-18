@@ -85,8 +85,8 @@ export function useZoomPan(opts: UseZoomPanOpts) {
   const wheelHandler = useCallback(
     (e: WheelEvent) => {
       if (!enabled) return
-      const svg = e.currentTarget as SVGSVGElement | null
-      if (!svg) return
+      const svg = e.currentTarget
+      if (!(svg instanceof SVGSVGElement)) return
       e.preventDefault()
       const r = svg.getBoundingClientRect()
       const m = clientToViewBox({ x: e.clientX, y: e.clientY }, r, vbW, vbH)

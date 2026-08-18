@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { geoBounds, geoEqualEarth, geoPath } from "d3-geo"
 import { CountryPath } from "./CountryPath"
-import type { Feature, MultiPoint, MultiPolygon, Polygon } from "geojson"
+import type { MultiPoint } from "geojson"
 import { useWorld } from "@/lib/geo"
 import { cn } from "@/lib/utils"
 
@@ -52,9 +52,7 @@ export function CountryInset({ targetId, className }: Props) {
 
   const paths = useMemo(() => {
     if (!world) return []
-    const target = world.featuresById.get(targetId) as
-      | Feature<Polygon | MultiPolygon>
-      | undefined
+    const target = world.featuresById.get(targetId)
     if (!target) return []
 
     const [[x0, y0], [x1, y1]] = expandBounds(geoBounds(target))

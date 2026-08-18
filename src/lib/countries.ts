@@ -14,7 +14,7 @@ export type Country = {
 
 function buildCountries(): Array<Country> {
   const out: Array<Country> = []
-  for (const [id, info] of Object.entries(ISO_META)) {
+  for (const [id, info] of ISO_META) {
     const matchSet = new Set<string>()
     matchSet.add(normalize(info.name))
     for (const a of info.aliases) matchSet.add(normalize(a))

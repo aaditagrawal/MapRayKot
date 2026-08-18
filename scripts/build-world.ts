@@ -8,7 +8,12 @@ import { feature } from "topojson-client"
 import polygonClipping from "polygon-clipping"
 import simplify from "@turf/simplify"
 import { ISO_META } from "./iso-meta.ts"
-import type { Geom, MultiPolygon as PCMultiPolygon } from "polygon-clipping"
+import type {
+  Pair,
+  MultiPolygon as PCMultiPolygon,
+  Polygon as PCPolygon,
+  Ring as PCRing,
+} from "polygon-clipping"
 import type {
   Feature,
   FeatureCollection,
@@ -31,24 +36,38 @@ const IN_ID = "356"
 const PAK_ID = "586"
 const CHN_ID = "156"
 
-type MPCoords = Array<Array<Array<Position>>>
+/**
+ * Coordinates as polygon-clipping models them: lon/lat pairs rather than
+ * GeoJSON `Position`, which is an open-ended `number[]` that may carry a third
+ * (altitude) component. Everything downstream is 2D, so pairs are the contract.
+ */
+type MPCoords = PCMultiPolygon
+
+/** Drop any altitude component; the clipper and the renderer are both 2D. */
+function toPairRings(rings: Array<Array<Position>>): PCPolygon {
+  return rings.map((ring) => ring.map((p): Pair => [p[0], p[1]]))
+}
+
+function toPairCoords(coords: Array<Array<Array<Position>>>): MPCoords {
+  return coords.map(toPairRings)
+}
 
 function toMultiPolygonCoords(g: Polygon | MultiPolygon): MPCoords {
-  if (g.type === "Polygon") return [g.coordinates]
-  return g.coordinates
+  if (g.type === "Polygon") return [toPairRings(g.coordinates)]
+  return toPairCoords(g.coordinates)
 }
 
 function round(coords: MPCoords, dp = 5): MPCoords {
   const m = Math.pow(10, dp)
   return coords.map((poly) =>
     poly.map((ring) =>
-      ring.map(([x, y]) => [Math.round(x * m) / m, Math.round(y * m) / m])
+      ring.map(([x, y]): Pair => [Math.round(x * m) / m, Math.round(y * m) / m])
     )
   )
 }
 
 /** Signed area of a ring (shoelace). Positive = CCW, negative = CW. */
-function ringArea(ring: Array<Position>): number {
+function ringArea(ring: PCRing): number {
   let a = 0
   for (let i = 0, n = ring.length - 1; i < n; i++) {
     const [x1, y1] = ring[i]
@@ -75,20 +94,32 @@ function fixWinding(coords: MPCoords): MPCoords {
   )
 }
 
+/** The `properties` bag world-atlas ships on each country. */
+type CountryProperties = { name?: string }
+
+type WorldFeatures = FeatureCollection<
+  Polygon | MultiPolygon,
+  CountryProperties
+>
+
 function main() {
   console.log("[build-world] loading world-atlas…")
+  // SAFETY: worldAtlasPath resolves inside node_modules/world-atlas, whose
+  // countries-50m.json is published as a TopoJSON Topology. A shape mismatch
+  // would be a broken install, and the `objects.countries` read below throws.
   const worldTopo = JSON.parse(readFileSync(worldAtlasPath, "utf8")) as Topology
-  const fc = feature(
-    worldTopo,
-    worldTopo.objects.countries as GeometryCollection
-  ) as unknown as FeatureCollection<Polygon | MultiPolygon>
+  // SAFETY: countries-50m.json stores its `countries` object as a TopoJSON
+  // GeometryCollection whose members all carry a `name` property.
+  const countries = worldTopo.objects
+    .countries as GeometryCollection<CountryProperties>
+  // SAFETY: every geometry in that collection is a Polygon or MultiPolygon.
+  // `feature()` is declared to return the whole GeometryObject union because it
+  // is generic over any topology, so this file's narrower shape cannot be inferred.
+  const fc = feature(worldTopo, countries) as WorldFeatures
 
   // Patch Kosovo (no id in world-atlas) with synthetic "-99".
   for (const f of fc.features) {
-    if (
-      !f.id &&
-      (f.properties as { name?: string } | null)?.name === "Kosovo"
-    ) {
+    if (!f.id && f.properties?.name === "Kosovo") {
       f.id = "-99"
     }
   }
@@ -96,6 +127,9 @@ function main() {
   console.log(`[build-world] ${fc.features.length} features loaded`)
 
   console.log("[build-world] loading India claim geojson…")
+  // SAFETY: indiaClaimPath is a checked-in asset under scripts/data, authored as
+  // a GeoJSON FeatureCollection of Polygon/MultiPolygon claim outlines. The
+  // union below throws on any geometry that is not one of those two.
   const indiaFc = JSON.parse(
     readFileSync(indiaClaimPath, "utf8")
   ) as FeatureCollection<Polygon | MultiPolygon>
@@ -108,9 +142,9 @@ function main() {
     `[build-world] unioning ${indiaClaimInput.length} India claim feature(s)…`
   )
   const indiaClaim = polygonClipping.union(
-    indiaClaimInput[0] as unknown as Geom,
-    ...(indiaClaimInput.slice(1) as unknown as Array<Geom>)
-  ) as unknown as MPCoords
+    indiaClaimInput[0],
+    ...indiaClaimInput.slice(1)
+  )
 
   // Simplify tolerance (degrees). 0.05° ≈ 5.5 km at the equator — matches 50m data.
   const SIMPLIFY_TOL = 0.05
@@ -126,7 +160,7 @@ function main() {
       ],
     }
     const s = simplify(wrapped, { tolerance: SIMPLIFY_TOL, highQuality: false })
-    return s.features[0].geometry.coordinates as unknown as MPCoords
+    return toPairCoords(s.features[0].geometry.coordinates)
   }
 
   // Diff PAK & CHN against the India claim, replace India with claim.
@@ -142,10 +176,7 @@ function main() {
     }
     if (f.id === PAK_ID || f.id === CHN_ID) {
       const src = toMultiPolygonCoords(f.geometry)
-      const diffed = polygonClipping.difference(
-        src as unknown as Geom,
-        indiaClaim as unknown as PCMultiPolygon
-      ) as unknown as MPCoords
+      const diffed = polygonClipping.difference(src, indiaClaim)
       return {
         ...f,
         geometry: {
@@ -185,7 +216,7 @@ function main() {
   > = {}
   for (const f of fc.features) {
     const id = String(f.id)
-    const info = ISO_META[id] as (typeof ISO_META)[string] | undefined
+    const info = ISO_META.get(id)
     if (!info) continue
     meta[id] = {
       name: info.name,

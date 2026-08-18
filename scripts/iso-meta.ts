@@ -10,7 +10,7 @@ export type IsoInfo = {
   aliases: Array<string>
 }
 
-export const ISO_META: Record<string, IsoInfo> = {
+const ISO_META_ENTRIES = {
   "004": { name: "Afghanistan", iso2: "AF", iso3: "AFG", aliases: [] },
   "008": { name: "Albania", iso2: "AL", iso3: "ALB", aliases: [] },
   "012": { name: "Algeria", iso2: "DZ", iso3: "DZA", aliases: [] },
@@ -432,4 +432,13 @@ export const ISO_META: Record<string, IsoInfo> = {
   "887": { name: "Yemen", iso2: "YE", iso3: "YEM", aliases: [] },
   "894": { name: "Zambia", iso2: "ZM", iso3: "ZMB", aliases: [] },
   "716": { name: "Zimbabwe", iso2: "ZW", iso3: "ZWE", aliases: [] },
-}
+} satisfies Record<string, IsoInfo>
+
+/**
+ * Lookup keyed by world-atlas numeric id. A Map is the honest contract here:
+ * ids come from the topology at runtime, so misses are expected and `get`
+ * surfaces them as `undefined` instead of a silently unchecked index.
+ */
+export const ISO_META: ReadonlyMap<string, IsoInfo> = new Map(
+  Object.entries(ISO_META_ENTRIES)
+)

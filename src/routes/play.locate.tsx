@@ -35,7 +35,7 @@ type Phase =
       perTurnMs: number
       turns: number
       history: Array<RoundResult>
-      last: RoundResult & { click: [number, number] | null }
+      last: RoundOutcome
     }
   | {
       kind: "done"
@@ -51,6 +51,12 @@ type RoundResult = {
   inside: boolean
   points: number
   missed: boolean
+}
+
+/** A resolved round plus where the player clicked and the closest border point. */
+type RoundOutcome = RoundResult & {
+  click: [number, number] | null
+  nearest: [number, number] | null
 }
 
 function LocatePage() {
@@ -207,10 +213,7 @@ function ActiveRound({
         perTurnMs: phase.perTurnMs,
         turns: phase.turns,
         history: nextHistory,
-        last: { ...result, click: lonLat, nearest } as RoundResult & {
-          click: [number, number] | null
-          nearest?: [number, number] | null
-        },
+        last: { ...result, click: lonLat, nearest },
       })
     },
     [onComplete, phase, target, world]
@@ -280,9 +283,7 @@ function ActiveRound({
     phase.kind === "feedback" && phase.last.click
       ? {
           click: phase.last.click,
-          nearest:
-            (phase.last as { nearest?: [number, number] | null }).nearest ??
-            null,
+          nearest: phase.last.nearest,
           inside: phase.last.inside,
         }
       : null

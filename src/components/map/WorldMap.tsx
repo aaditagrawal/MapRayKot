@@ -162,7 +162,7 @@ function WorldMapInner({
     if (!lonLat) return
     const [lon, lat] = lonLat
     if (!Number.isFinite(lon) || !Number.isFinite(lat)) return
-    onLocateClick([lon, lat] as [number, number])
+    onLocateClick(lonLat)
   }
 
   // Clear hover on pointerleave (in case pointerleave on a path is missed)

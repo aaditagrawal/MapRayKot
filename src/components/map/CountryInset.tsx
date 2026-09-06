@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { useMemo } from "react"
 import { geoBounds, geoEqualEarth, geoPath } from "d3-geo"
 import { CountryPath } from "./CountryPath"
@@ -84,12 +85,7 @@ export function CountryInset({ targetId, className }: Props) {
 
   if (error) {
     return (
-      <div
-        className={cn(
-          "flex aspect-[3/2] w-full items-center justify-center bg-[var(--color-map-ocean)] p-2 text-center text-xs text-muted-foreground",
-          className
-        )}
-      >
+      <div className={cn(classNames.componentsMapCountryInset50, className)}>
         Map unavailable
       </div>
     )
@@ -99,7 +95,7 @@ export function CountryInset({ targetId, className }: Props) {
     <svg
       viewBox={`0 0 ${VB_W} ${VB_H}`}
       xmlns="http://www.w3.org/2000/svg"
-      className={cn("select-none", className)}
+      className={cn(classNames.componentsMapCountryInset51, className)}
       pointerEvents="none"
     >
       <rect

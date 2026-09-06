@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { Country } from "@/lib/countries"
 import { Input } from "@/components/ui/input"
@@ -48,7 +49,7 @@ export function CountryAutocomplete({
   }
 
   return (
-    <div className="relative">
+    <div className={classNames.componentsGameCountryAutocomplete0}>
       <Input
         ref={inputRef}
         value={value}
@@ -81,17 +82,17 @@ export function CountryAutocomplete({
         autoCorrect="off"
         spellCheck={false}
         placeholder={placeholder}
-        className="h-12 text-base"
+        className={classNames.componentsGameCountryAutocomplete1}
       />
       {suggestions.length > 0 && value.trim() && (
-        <div className="absolute inset-x-0 top-full z-20 mt-1 border bg-popover text-popover-foreground shadow-sm">
+        <div className={classNames.componentsGameCountryAutocomplete2}>
           {suggestions.map((c) => (
             <button
               key={c.id}
               type="button"
               className={cn(
-                "flex w-full items-center justify-between px-3 py-2 text-left text-sm",
-                "hover:bg-accent/10 focus:bg-accent/10 focus:outline-none"
+                classNames.componentsGameCountryAutocomplete3,
+                classNames.componentsGameCountryAutocomplete4
               )}
               onClick={() => {
                 onSolve(c)
@@ -100,7 +101,9 @@ export function CountryAutocomplete({
               }}
             >
               <span>{c.name}</span>
-              <span className="text-xs text-muted-foreground">{c.iso3}</span>
+              <span className={classNames.componentsGameCountryAutocomplete5}>
+                {c.iso3}
+              </span>
             </button>
           ))}
         </div>

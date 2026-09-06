@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -45,44 +46,47 @@ export function SessionConfig({
   const [accent, rest] = splitTitle(title)
 
   return (
-    <div className="space-y-12 py-4 md:py-8">
-      <header className="space-y-5">
-        <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
-          <span className="h-px w-6 bg-border" />
+    <div className={classNames.componentsGameSessionConfig27}>
+      <header className={classNames.componentsGameSessionConfig28}>
+        <span className={classNames.componentsGameSessionConfig29}>
+          <span className={classNames.componentsGameSessionConfig30} />
           New session
         </span>
-        <h2 className="font-serif text-4xl leading-[1.05] font-normal tracking-tight md:text-5xl">
-          <em className="text-primary italic">{accent}</em>
+        <h2 className={classNames.componentsGameSessionConfig31}>
+          <em className={classNames.componentsGameGameHUD12}>{accent}</em>
           {rest && ` ${rest}`}.
         </h2>
-        <p className="max-w-prose text-sm leading-relaxed text-muted-foreground md:text-base">
+        <p className={classNames.componentsGameSessionConfig32}>
           {description}
         </p>
       </header>
 
-      <div className="space-y-10 border-t border-border pt-10">
+      <div className={classNames.componentsGameSessionConfig33}>
         {groups.map((g, idx) => {
           const value = values[g.key]
           const isCustom = custom[g.key] ?? false
           return (
-            <fieldset key={g.key} className="space-y-4">
-              <div className="flex items-baseline justify-between gap-4">
-                <legend className="flex items-baseline gap-3">
-                  <span className="font-serif text-xl text-muted-foreground/70 italic">
+            <fieldset
+              key={g.key}
+              className={classNames.componentsGameSessionConfig34}
+            >
+              <div className={classNames.componentsGameSessionConfig35}>
+                <legend className={classNames.componentsGameSessionConfig36}>
+                  <span className={classNames.componentsGameSessionConfig37}>
                     {`${String(idx + 1).padStart(2, "0")}.`}
                   </span>
-                  <span className="text-sm font-medium tracking-tight">
+                  <span className={classNames.componentsGameSessionConfig38}>
                     {g.label}
                   </span>
                 </legend>
-                <span className="font-serif text-base text-muted-foreground tabular-nums">
+                <span className={classNames.componentsGameSessionConfig39}>
                   {value}
-                  <span className="ml-1 text-[10px] tracking-[0.2em] uppercase">
+                  <span className={classNames.componentsGameSessionConfig40}>
                     {g.unit}
                   </span>
                 </span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className={classNames.componentsGameSessionConfig41}>
                 {g.choices.map((c) => {
                   const active = !isCustom && value === c.value
                   return (
@@ -94,10 +98,10 @@ export function SessionConfig({
                         setCustom((cu) => ({ ...cu, [g.key]: false }))
                       }}
                       className={cn(
-                        "h-9 min-w-[3.25rem] border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
+                        classNames.componentsGameSessionConfig42,
                         active
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
+                          ? classNames.componentsGameSessionConfig43
+                          : classNames.componentsGameSessionConfig44
                       )}
                     >
                       {c.label}
@@ -110,10 +114,10 @@ export function SessionConfig({
                     setCustom((cu) => ({ ...cu, [g.key]: !cu[g.key] }))
                   }
                   className={cn(
-                    "h-9 min-w-[3.25rem] border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
+                    classNames.componentsGameSessionConfig42,
                     isCustom
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
+                      ? classNames.componentsGameSessionConfig43
+                      : classNames.componentsGameSessionConfig44
                   )}
                 >
                   Custom
@@ -137,7 +141,7 @@ export function SessionConfig({
                       }))
                     }
                   }}
-                  className="h-9 w-32"
+                  className={classNames.componentsGameSessionConfig45}
                 />
               )}
             </fieldset>
@@ -145,16 +149,16 @@ export function SessionConfig({
         })}
       </div>
 
-      <div className="border-t border-border pt-8">
+      <div className={classNames.componentsGameSessionConfig46}>
         <Button
           size="lg"
-          className="group/cta w-full justify-between text-xs tracking-[0.3em] uppercase"
+          className={classNames.componentsGameSessionConfig47}
           onClick={() => onStart(values)}
         >
           <span>{ctaLabel}</span>
           <span
             aria-hidden
-            className="transition-transform group-hover/cta:translate-x-1"
+            className={classNames.componentsGameSessionConfig48}
           >
             →
           </span>

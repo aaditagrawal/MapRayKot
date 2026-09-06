@@ -66,5 +66,5 @@
     "vitest": "^4.1.10",
     "world-atlas": "^2.0.2"
   },
-  "packageManager": "bun@1.3.14"
+  "packageManager": "bun@1.4.2"
 }

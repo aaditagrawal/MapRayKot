@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
@@ -45,7 +46,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider>
           {children}
-          <div className="fixed top-3 right-3 z-50">
+          <div className={classNames.routesRoot143}>
             <ThemeToggle />
           </div>
         </ThemeProvider>

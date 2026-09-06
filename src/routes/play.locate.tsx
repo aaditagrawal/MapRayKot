@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { Country } from "@/lib/countries"
@@ -138,24 +139,16 @@ function LocatePage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8 md:py-12">
-      <nav className="mb-8 flex items-center justify-between md:mb-12">
-        <Link
-          to="/"
-          className="group inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
-        >
-          <span
-            aria-hidden
-            className="transition-transform group-hover:-translate-x-0.5"
-          >
+    <div className={classNames.routesPlayLocate190}>
+      <nav className={classNames.routesPlayLocate191}>
+        <Link to="/" className={classNames.routesPlayLocate192}>
+          <span aria-hidden className={classNames.routesPlayLocate193}>
             ←
           </span>
           <span>Atlas</span>
         </Link>
-        <span className="inline-flex items-baseline gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
-          <span className="font-serif text-base tracking-normal text-muted-foreground/70 normal-case italic">
-            I.
-          </span>
+        <span className={classNames.routesPlayLocate194}>
+          <span className={classNames.routesPlayLocate195}>I.</span>
           Locate
         </span>
       </nav>
@@ -289,7 +282,7 @@ function ActiveRound({
       : null
 
   return (
-    <div className="space-y-6">
+    <div className={classNames.routesPlayLocate196}>
       <GameHUD
         timerPct={phase.kind === "playing" ? timerPct : 0}
         stats={[
@@ -298,7 +291,7 @@ function ActiveRound({
           { label: "Score", value: `${phase.score}` },
         ]}
       />
-      <div className="border border-border bg-card">
+      <div className={classNames.routesPlayLocate197}>
         <WorldMap
           crosshair
           onLocateClick={
@@ -318,12 +311,12 @@ function ActiveRound({
           targetId={
             phase.kind === "feedback" ? phase.last.country.id : undefined
           }
-          className="h-auto w-full"
+          className={classNames.routesPlayLocate198}
         />
       </div>
       {phase.kind === "feedback" && (
-        <div className="flex flex-col gap-3 md:flex-row md:items-stretch">
-          <div className="md:flex-1">
+        <div className={classNames.routesPlayLocate199}>
+          <div className={classNames.routesPlayLocate200}>
             <RoundFeedback
               country={phase.last.country.name}
               km={phase.last.km}
@@ -336,22 +329,19 @@ function ActiveRound({
             size="lg"
             onClick={advance}
             autoFocus
-            className="group/next h-14 w-full justify-between gap-4 px-6 text-sm tracking-[0.3em] uppercase md:h-auto md:w-60"
+            className={classNames.routesPlayLocate201}
           >
             <span>
               {phase.index + 1 >= phase.queue.length ? "Summary" : "Next round"}
             </span>
-            <span
-              aria-hidden
-              className="text-base transition-transform group-hover/next:translate-x-1"
-            >
+            <span aria-hidden className={classNames.routesPlayLocate202}>
               →
             </span>
           </Button>
         </div>
       )}
       {phase.kind === "playing" && (
-        <p className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+        <p className={classNames.routesPlayLocate203}>
           <span>Tap to pin</span>
           <span aria-hidden>·</span>
           <span>Drag to pan</span>
@@ -377,17 +367,15 @@ function Summary({
     : 0
   const perfects = phase.history.filter((h) => h.inside).length
   return (
-    <div className="space-y-12 py-4 md:py-8">
-      <header className="space-y-6">
-        <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
-          <span className="h-px w-6 bg-border" />
+    <div className={classNames.componentsGameSessionConfig27}>
+      <header className={classNames.routesPlayLocate196}>
+        <span className={classNames.componentsGameSessionConfig29}>
+          <span className={classNames.componentsGameSessionConfig30} />
           Session complete
         </span>
-        <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
-          <h2 className="font-serif text-7xl leading-none font-normal tabular-nums md:text-8xl">
-            {phase.score}
-          </h2>
-          <dl className="grid grid-cols-3 gap-x-8 gap-y-1 text-xs">
+        <div className={classNames.routesPlayLocate204}>
+          <h2 className={classNames.routesPlayLocate205}>{phase.score}</h2>
+          <dl className={classNames.routesPlayLocate206}>
             <Stat label="Turns" value={`${phase.turns}`} />
             <Stat label="Per turn" value={`${phase.perTurnMs / 1000}s`} />
             <Stat label="Avg" value={`${avg}`} />
@@ -400,26 +388,25 @@ function Summary({
         </div>
       </header>
 
-      <section className="border-t border-border pt-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+      <section className={classNames.componentsGameSessionConfig46}>
+        <div className={classNames.routesPlayLocate207}>
+          <span className={classNames.componentsGameGameHUD10}>
             Round by round
           </span>
-          <span className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
+          <span className={classNames.routesIndex178}>
             {phase.history.length} round{phase.history.length === 1 ? "" : "s"}
           </span>
         </div>
-        <ol className="divide-y divide-border/60">
+        <ol className={classNames.routesPlayLocate208}>
           {phase.history.map((h, i) => (
-            <li
-              key={i}
-              className="grid grid-cols-[auto_1fr_auto_auto] items-baseline gap-5 py-4"
-            >
-              <span className="font-serif text-lg text-muted-foreground/60 italic tabular-nums">
+            <li key={i} className={classNames.routesPlayLocate209}>
+              <span className={classNames.routesPlayLocate210}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="truncate text-sm">{h.country.name}</span>
-              <span className="text-[11px] tracking-[0.2em] text-muted-foreground uppercase tabular-nums">
+              <span className={classNames.routesPlayLocate211}>
+                {h.country.name}
+              </span>
+              <span className={classNames.routesPlayLocate212}>
                 {h.missed
                   ? "time up"
                   : h.inside
@@ -428,8 +415,10 @@ function Summary({
               </span>
               <span
                 className={cn(
-                  "font-serif text-xl tabular-nums",
-                  h.points > 0 ? "text-foreground" : "text-muted-foreground/60"
+                  classNames.routesPlayLocate213,
+                  h.points > 0
+                    ? classNames.routesPlayLocate214
+                    : classNames.routesPlayLocate215
                 )}
               >
                 +{h.points}
@@ -439,28 +428,19 @@ function Summary({
         </ol>
       </section>
 
-      <div className="flex flex-wrap items-center gap-6 border-t border-border pt-8">
+      <div className={classNames.routesPlayLocate216}>
         <Button
           size="lg"
           onClick={onPlayAgain}
-          className="group/again gap-2 px-6 text-xs tracking-[0.3em] uppercase"
+          className={classNames.routesPlayLocate217}
         >
           Play again
-          <span
-            aria-hidden
-            className="transition-transform group-hover/again:translate-x-1"
-          >
+          <span aria-hidden className={classNames.routesPlayLocate218}>
             →
           </span>
         </Button>
-        <Link
-          to="/"
-          className="group inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
-        >
-          <span
-            aria-hidden
-            className="transition-transform group-hover:-translate-x-0.5"
-          >
+        <Link to="/" className={classNames.routesPlayLocate192}>
+          <span aria-hidden className={classNames.routesPlayLocate193}>
             ←
           </span>
           Atlas
@@ -472,11 +452,9 @@ function Summary({
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-1">
-      <dt className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
-        {label}
-      </dt>
-      <dd className="font-serif text-lg font-normal tabular-nums">{value}</dd>
+    <div className={classNames.routesPlayLocate219}>
+      <dt className={classNames.routesPlayLocate220}>{label}</dt>
+      <dd className={classNames.routesPlayLocate221}>{value}</dd>
     </div>
   )
 }

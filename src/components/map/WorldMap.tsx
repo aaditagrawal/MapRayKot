@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { CountryPath } from "./CountryPath"
 import { Graticule } from "./Graticule"
@@ -38,16 +39,13 @@ export function WorldMap(props: Props) {
   if (error) {
     return (
       <div
-        className={cn(
-          "flex aspect-[12/6.5] w-full flex-col items-center justify-center gap-3 bg-[var(--color-map-ocean)] p-6 text-center",
-          props.className
-        )}
+        className={cn(classNames.componentsMapWorldMap54, props.className)}
         role="alert"
       >
-        <p className="text-sm text-foreground">Couldn't load the world map.</p>
-        <p className="max-w-md text-xs text-muted-foreground">
-          {error.message}
+        <p className={classNames.componentsMapWorldMap55}>
+          Couldn't load the world map.
         </p>
+        <p className={classNames.componentsMapWorldMap56}>{error.message}</p>
         <Button size="sm" onClick={retry}>
           Try again
         </Button>
@@ -58,13 +56,12 @@ export function WorldMap(props: Props) {
   if (loading || !world) {
     return (
       <div
-        className={cn(
-          "flex aspect-[12/6.5] w-full items-center justify-center bg-[var(--color-map-ocean)]",
-          props.className
-        )}
+        className={cn(classNames.componentsMapWorldMap57, props.className)}
         aria-busy="true"
       >
-        <span className="text-xs text-muted-foreground">Loading map…</span>
+        <span className={classNames.componentsGameCountryAutocomplete5}>
+          Loading map…
+        </span>
       </div>
     )
   }
@@ -181,14 +178,18 @@ function WorldMapInner({
   }
 
   return (
-    <div className={cn("relative", className)}>
+    <div
+      className={cn(classNames.componentsGameCountryAutocomplete0, className)}
+    >
       <svg
         ref={svgRef}
         viewBox={`0 0 ${VB_W} ${VB_H}`}
         xmlns="http://www.w3.org/2000/svg"
         className={cn(
-          "block h-auto w-full touch-none overscroll-contain select-none",
-          crosshair ? "cursor-crosshair" : "cursor-grab active:cursor-grabbing"
+          classNames.componentsMapWorldMap58,
+          crosshair
+            ? classNames.componentsMapWorldMap59
+            : classNames.componentsMapWorldMap60
         )}
         {...svgHandlers}
         onPointerDown={onSvgPointerDown}
@@ -255,7 +256,7 @@ function WorldMapInner({
         </g>
       </svg>
 
-      <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+      <div className={classNames.componentsMapWorldMap61}>
         <Button
           type="button"
           size="icon-sm"

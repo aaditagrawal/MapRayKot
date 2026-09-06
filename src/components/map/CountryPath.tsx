@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { memo } from "react"
 
 type Variant = "idle" | "hover" | "target" | "correct" | "wrong" | "dim"
@@ -27,7 +28,9 @@ function CountryPathBase({ d, variant, interactive, onHover }: Props) {
       strokeWidth={0.5}
       vectorEffect="non-scaling-stroke"
       className={
-        interactive ? "transition-colors duration-150" : "transition-colors"
+        interactive
+          ? classNames.componentsMapCountryPath52
+          : classNames.componentsMapCountryPath53
       }
       pointerEvents={interactive ? "auto" : "none"}
       onPointerEnter={interactive && onHover ? () => onHover(true) : undefined}

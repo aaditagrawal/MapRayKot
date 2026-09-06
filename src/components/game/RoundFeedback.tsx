@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { cn } from "@/lib/utils"
 
 type Props = {
@@ -23,33 +24,33 @@ export function RoundFeedback({ country, km, inside, points, missed }: Props) {
         ? "mid"
         : "bad"
   const toneCls = {
-    good: "border-[color-mix(in_oklab,var(--color-map-correct)_55%,transparent)] bg-[color-mix(in_oklab,var(--color-map-correct)_8%,transparent)]",
-    mid: "border-primary/40 bg-primary/[0.04]",
-    bad: "border-destructive/40 bg-destructive/[0.04]",
-    muted: "border-border/70 bg-muted/20",
+    good: classNames.componentsGameRoundFeedback16,
+    mid: classNames.componentsGameRoundFeedback17,
+    bad: classNames.componentsGameRoundFeedback18,
+    muted: classNames.componentsGameRoundFeedback19,
   }[tone]
 
   const eyebrow = missed ? "Time up" : inside ? "Bull's-eye" : "Distance"
   const headline = missed ? "—" : inside ? "Inside the border" : formatKm(km)
 
   return (
-    <div className={cn("border p-5", toneCls)}>
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
-          {eyebrow}
-        </span>
-        <span className="font-serif text-base text-muted-foreground italic">
+    <div className={cn(classNames.componentsGameRoundFeedback20, toneCls)}>
+      <div className={classNames.componentsGameRoundFeedback21}>
+        <span className={classNames.componentsGameGameHUD10}>{eyebrow}</span>
+        <span className={classNames.componentsGameRoundFeedback22}>
           {country}
         </span>
       </div>
-      <div className="mt-3 flex items-baseline justify-between gap-3">
-        <span className="font-serif text-3xl leading-none font-normal tabular-nums md:text-4xl">
+      <div className={classNames.componentsGameRoundFeedback23}>
+        <span className={classNames.componentsGameRoundFeedback24}>
           {headline}
         </span>
         <span
           className={cn(
-            "font-serif text-3xl leading-none font-normal tabular-nums md:text-4xl",
-            points > 0 ? "text-primary" : "text-muted-foreground/70"
+            classNames.componentsGameRoundFeedback24,
+            points > 0
+              ? classNames.componentsGameRoundFeedback25
+              : classNames.componentsGameRoundFeedback26
           )}
         >
           +{points}

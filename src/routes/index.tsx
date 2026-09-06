@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 import type { LocateRun, NameRun } from "@/lib/storage"
@@ -17,7 +18,7 @@ function Home() {
   }, [])
 
   return (
-    <main className="relative">
+    <main className={classNames.componentsGameCountryAutocomplete0}>
       <Hero />
       <Modes />
       <History locate={locate} name={name} />
@@ -28,88 +29,72 @@ function Home() {
 
 function Hero() {
   return (
-    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 py-24">
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <AtlasSilhouette className="w-[180%] max-w-none text-primary/[0.07] sm:w-[140%] md:w-[120%] lg:w-[105%] dark:text-primary/[0.10]" />
+    <section className={classNames.routesIndex144}>
+      <div className={classNames.routesIndex145}>
+        <AtlasSilhouette className={classNames.routesIndex146} />
       </div>
       <div
-        className="pointer-events-none absolute inset-0"
+        className={classNames.routesIndex147}
         style={{
           background:
             "radial-gradient(ellipse 70% 55% at center, transparent 20%, var(--background) 88%)",
         }}
       />
 
-      <div className="relative z-10 flex max-w-3xl flex-col items-center text-center">
-        <span className="mb-10 inline-flex animate-in items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase duration-300 fill-mode-both fade-in">
-          <span className="h-px w-8 bg-border" />
+      <div className={classNames.routesIndex148}>
+        <span className={classNames.routesIndex149}>
+          <span className={classNames.routesIndex150} />
           MapRayKot · An Atlas Game
-          <span className="h-px w-8 bg-border" />
+          <span className={classNames.routesIndex150} />
         </span>
 
-        <h1 className="animate-in font-serif text-5xl leading-[1.02] font-normal tracking-tight delay-75 duration-500 fill-mode-both fade-in slide-in-from-bottom-1 sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+        <h1 className={classNames.routesIndex151}>
           Know the world,
           <br />
-          <em className="text-primary italic">one country</em> at a time.
+          <em className={classNames.componentsGameGameHUD12}>
+            one country
+          </em> at
+          a time.
         </h1>
 
-        <p className="mt-8 max-w-md animate-in text-sm leading-relaxed text-balance text-muted-foreground delay-200 duration-500 fill-mode-both fade-in md:text-base">
+        <p className={classNames.routesIndex152}>
           Pin it on the map, or name it on sight. Two quiet ways to learn the
           borders you've forgotten.
         </p>
 
-        <div className="mt-12 flex animate-in items-center gap-7 text-xs tracking-[0.3em] uppercase delay-300 duration-500 fill-mode-both fade-in slide-in-from-bottom-1">
-          <Link
-            to="/play/locate"
-            className="group inline-flex items-center gap-2 text-foreground transition-colors hover:text-primary"
-          >
-            <span className="border-b border-foreground/40 pb-1 transition-colors group-hover:border-primary">
-              Locate
-            </span>
-            <span
-              aria-hidden
-              className="transition-transform group-hover:translate-x-1"
-            >
+        <div className={classNames.routesIndex153}>
+          <Link to="/play/locate" className={classNames.routesIndex154}>
+            <span className={classNames.routesIndex155}>Locate</span>
+            <span aria-hidden className={classNames.routesIndex156}>
               →
             </span>
           </Link>
-          <span aria-hidden className="h-3 w-px bg-border" />
-          <Link
-            to="/play/name"
-            className="group inline-flex items-center gap-2 text-foreground transition-colors hover:text-primary"
-          >
-            <span className="border-b border-foreground/40 pb-1 transition-colors group-hover:border-primary">
-              Name
-            </span>
-            <span
-              aria-hidden
-              className="transition-transform group-hover:translate-x-1"
-            >
+          <span aria-hidden className={classNames.routesIndex157} />
+          <Link to="/play/name" className={classNames.routesIndex154}>
+            <span className={classNames.routesIndex155}>Name</span>
+            <span aria-hidden className={classNames.routesIndex156}>
               →
             </span>
           </Link>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-in text-[10px] tracking-[0.4em] text-muted-foreground/60 uppercase delay-500 duration-500 fill-mode-both fade-in">
-        scroll for your runs
-      </div>
+      <div className={classNames.routesIndex158}>scroll for your runs</div>
     </section>
   )
 }
 
 function Modes() {
   return (
-    <section className="border-t border-border">
-      <div className="mx-auto max-w-5xl px-6 py-20 text-center md:py-28">
-        <span className="text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
-          Two modes
-        </span>
-        <h2 className="mt-4 font-serif text-4xl leading-tight font-normal tracking-tight md:text-5xl">
-          Choose how you <em className="text-primary italic">wander</em>.
+    <section className={classNames.routesIndex159}>
+      <div className={classNames.routesIndex160}>
+        <span className={classNames.routesIndex161}>Two modes</span>
+        <h2 className={classNames.routesIndex162}>
+          {"Choose how you "}
+          <em className={classNames.componentsGameGameHUD12}>wander</em>.
         </h2>
       </div>
-      <div className="grid border-y border-border md:grid-cols-2">
+      <div className={classNames.routesIndex163}>
         <ModeBlock
           to="/play/locate"
           numeral="I."
@@ -149,35 +134,24 @@ function ModeBlock({
     <Link
       to={to}
       className={cn(
-        "group relative flex flex-col gap-10 px-6 py-16 transition-colors hover:bg-muted/40 md:gap-14 md:px-12 md:py-20",
-        align === "end"
-          ? "md:items-end md:text-right"
-          : "md:items-start md:text-left",
-        divider && "border-t border-border md:border-t-0 md:border-l"
+        classNames.routesIndex164,
+        align === "end" ? classNames.routesIndex165 : classNames.routesIndex166,
+        divider && classNames.routesIndex167
       )}
     >
       <div
         className={cn(
-          "flex items-baseline gap-4",
-          align === "end" && "md:flex-row-reverse"
+          classNames.routesIndex168,
+          align === "end" && classNames.routesIndex169
         )}
       >
-        <span className="font-serif text-2xl text-muted-foreground/60 italic">
-          {numeral}
-        </span>
-        <h3 className="font-serif text-5xl leading-none font-normal tracking-tight transition-colors group-hover:text-primary md:text-6xl">
-          {title}
-        </h3>
+        <span className={classNames.routesIndex170}>{numeral}</span>
+        <h3 className={classNames.routesIndex171}>{title}</h3>
       </div>
-      <p className="max-w-sm text-sm leading-relaxed text-muted-foreground md:text-base">
-        {body}
-      </p>
-      <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors group-hover:text-primary">
+      <p className={classNames.routesIndex172}>{body}</p>
+      <span className={classNames.routesIndex173}>
         Begin
-        <span
-          aria-hidden
-          className="transition-transform group-hover:translate-x-1"
-        >
+        <span aria-hidden className={classNames.routesIndex156}>
           →
         </span>
       </span>
@@ -193,16 +167,15 @@ function History({
   name: Array<NameRun>
 }) {
   return (
-    <section className="border-b border-border">
-      <div className="mx-auto max-w-5xl px-6 py-20 text-center md:py-28">
-        <span className="text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
-          Your runs
-        </span>
-        <h2 className="mt-4 font-serif text-4xl leading-tight font-normal tracking-tight md:text-5xl">
-          A <em className="text-primary italic">quiet</em> ladder.
+    <section className={classNames.routesIndex174}>
+      <div className={classNames.routesIndex160}>
+        <span className={classNames.routesIndex161}>Your runs</span>
+        <h2 className={classNames.routesIndex162}>
+          A <em className={classNames.componentsGameGameHUD12}>quiet</em>
+          {" ladder."}
         </h2>
       </div>
-      <div className="mx-auto grid max-w-5xl border-t border-border md:grid-cols-2">
+      <div className={classNames.routesIndex175}>
         <Ladder
           label="Locate"
           empty="Pin a country to start your ladder."
@@ -243,50 +216,41 @@ function Ladder({
   return (
     <div
       className={cn(
-        "px-6 py-12 md:px-12 md:py-16",
-        divider && "border-t border-border md:border-t-0 md:border-l"
+        classNames.routesIndex176,
+        divider && classNames.routesIndex167
       )}
     >
-      <div className="mb-8 flex items-baseline justify-between">
-        <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
-          {label}
-        </span>
+      <div className={classNames.routesIndex177}>
+        <span className={classNames.componentsGameGameHUD10}>{label}</span>
         {rows.length > 0 && (
-          <span className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
+          <span className={classNames.routesIndex178}>
             {rows.length} run{rows.length === 1 ? "" : "s"}
           </span>
         )}
       </div>
       {rows.length === 0 ? (
-        <p className="font-serif text-lg text-muted-foreground italic">
-          {empty}
-        </p>
+        <p className={classNames.routesIndex179}>{empty}</p>
       ) : (
-        <ol className="space-y-0">
+        <ol className={classNames.routesIndex180}>
           {rows.map((row, i) => (
-            <li
-              key={row.at}
-              className="grid grid-cols-[auto_1fr_auto] items-baseline gap-5 border-t border-border/60 py-4 first:border-t-0"
-            >
+            <li key={row.at} className={classNames.routesIndex181}>
               <span
                 className={cn(
-                  "font-serif tabular-nums",
+                  classNames.routesIndex182,
                   i === 0
-                    ? "text-2xl text-primary"
-                    : "text-lg text-muted-foreground/60"
+                    ? classNames.routesIndex183
+                    : classNames.routesIndex184
                 )}
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <div className="min-w-0">
-                <div className="font-serif text-3xl leading-none font-normal tabular-nums md:text-4xl">
+              <div className={classNames.routesIndex185}>
+                <div className={classNames.componentsGameRoundFeedback24}>
                   {row.score}
                 </div>
-                <div className="mt-2 truncate text-[11px] text-muted-foreground">
-                  {row.meta}
-                </div>
+                <div className={classNames.routesIndex186}>{row.meta}</div>
               </div>
-              <span className="text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase tabular-nums">
+              <span className={classNames.routesIndex187}>
                 {timeAgo(row.at)}
               </span>
             </li>
@@ -299,11 +263,11 @@ function Ladder({
 
 function Colophon() {
   return (
-    <footer className="px-6 py-10 text-center text-[10px] tracking-[0.4em] text-muted-foreground/70 uppercase">
-      <span className="inline-flex items-center gap-3">
-        <span className="h-px w-6 bg-border" />
+    <footer className={classNames.routesIndex188}>
+      <span className={classNames.routesIndex189}>
+        <span className={classNames.componentsGameSessionConfig30} />
         End of the atlas
-        <span className="h-px w-6 bg-border" />
+        <span className={classNames.componentsGameSessionConfig30} />
       </span>
     </footer>
   )

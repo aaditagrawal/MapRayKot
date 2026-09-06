@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { Country } from "@/lib/countries"
@@ -98,24 +99,16 @@ function NamePage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8 md:py-12">
-      <nav className="mb-8 flex items-center justify-between md:mb-12">
-        <Link
-          to="/"
-          className="group inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
-        >
-          <span
-            aria-hidden
-            className="transition-transform group-hover:-translate-x-0.5"
-          >
+    <div className={classNames.routesPlayLocate190}>
+      <nav className={classNames.routesPlayLocate191}>
+        <Link to="/" className={classNames.routesPlayLocate192}>
+          <span aria-hidden className={classNames.routesPlayLocate193}>
             ←
           </span>
           <span>Atlas</span>
         </Link>
-        <span className="inline-flex items-baseline gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
-          <span className="font-serif text-base tracking-normal text-muted-foreground/70 normal-case italic">
-            II.
-          </span>
+        <span className={classNames.routesPlayLocate194}>
+          <span className={classNames.routesPlayLocate195}>II.</span>
           Name
         </span>
       </nav>
@@ -253,7 +246,7 @@ function Active({
   const score = phase.solved.length * 4 - phase.skipped.length
 
   return (
-    <div className="space-y-6">
+    <div className={classNames.routesPlayLocate196}>
       <GameHUD
         timerPct={timerPct}
         stats={[
@@ -263,40 +256,37 @@ function Active({
           { label: "Skipped", value: `${phase.skipped.length}` },
         ]}
       />
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <div className="border border-border bg-card">
+      <div className={classNames.routesPlayName222}>
+        <div className={classNames.routesPlayLocate197}>
           <WorldMap
             targetId={target.id}
             solvedIds={solvedIds}
             wrongId={phase.flash?.country.id ?? null}
-            className="h-auto w-full"
+            className={classNames.routesPlayLocate198}
           />
         </div>
-        <div className="flex flex-col gap-5">
-          <section className="border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border/60 px-4 py-3">
-              <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
-                Region
-              </span>
-              <span className="font-serif text-sm text-muted-foreground/70 italic">
-                close-up
-              </span>
+        <div className={classNames.routesPlayName223}>
+          <section className={classNames.routesPlayLocate197}>
+            <div className={classNames.routesPlayName224}>
+              <span className={classNames.componentsGameGameHUD10}>Region</span>
+              <span className={classNames.routesPlayName225}>close-up</span>
             </div>
-            <div className="p-3">
-              <CountryInset targetId={target.id} className="h-auto w-full" />
+            <div className={classNames.routesPlayName226}>
+              <CountryInset
+                targetId={target.id}
+                className={classNames.routesPlayLocate198}
+              />
             </div>
           </section>
 
-          <section className="border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border/60 px-4 py-3">
-              <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+          <section className={classNames.routesPlayLocate197}>
+            <div className={classNames.routesPlayName224}>
+              <span className={classNames.componentsGameGameHUD10}>
                 Your answer
               </span>
-              <span className="font-serif text-sm text-muted-foreground/70 italic">
-                +4 / −1
-              </span>
+              <span className={classNames.routesPlayName225}>+4 / −1</span>
             </div>
-            <div className="p-3">
+            <div className={classNames.routesPlayName226}>
               <CountryAutocomplete pool={pool} onSolve={onSolve} />
             </div>
           </section>
@@ -304,20 +294,16 @@ function Active({
           <Button
             variant="outline"
             onClick={onSkip}
-            className="group/skip h-10 justify-between text-xs tracking-[0.3em] uppercase"
+            className={classNames.routesPlayName227}
           >
             <span>Skip</span>
-            <span className="font-serif text-base tracking-normal text-muted-foreground/70 normal-case italic">
-              −1
-            </span>
+            <span className={classNames.routesPlayLocate195}>−1</span>
           </Button>
 
           {phase.flash && (
-            <div className="border border-destructive/50 bg-destructive/[0.05] px-4 py-3">
-              <div className="text-[10px] tracking-[0.3em] text-destructive/80 uppercase">
-                Skipped
-              </div>
-              <div className="mt-1 font-serif text-xl italic">
+            <div className={classNames.routesPlayName228}>
+              <div className={classNames.routesPlayName229}>Skipped</div>
+              <div className={classNames.routesPlayName230}>
                 {phase.flash.country.name}
               </div>
             </div>
@@ -325,7 +311,7 @@ function Active({
         </div>
       </div>
 
-      <p className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+      <p className={classNames.routesPlayLocate203}>
         <span>Type the highlighted country</span>
         <span aria-hidden>·</span>
         <span>Enter submits</span>
@@ -348,17 +334,15 @@ function Summary({
   const accuracy =
     total > 0 ? Math.round((phase.solved.length / total) * 100) : 0
   return (
-    <div className="space-y-12 py-4 md:py-8">
-      <header className="space-y-6">
-        <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
-          <span className="h-px w-6 bg-border" />
+    <div className={classNames.componentsGameSessionConfig27}>
+      <header className={classNames.routesPlayLocate196}>
+        <span className={classNames.componentsGameSessionConfig29}>
+          <span className={classNames.componentsGameSessionConfig30} />
           Session complete
         </span>
-        <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
-          <h2 className="font-serif text-7xl leading-none font-normal tabular-nums md:text-8xl">
-            {score}
-          </h2>
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-1 text-xs sm:grid-cols-4">
+        <div className={classNames.routesPlayLocate204}>
+          <h2 className={classNames.routesPlayLocate205}>{score}</h2>
+          <dl className={classNames.routesPlayName231}>
             <NameStat label="Correct" value={`${phase.solved.length}`} />
             <NameStat label="Skipped" value={`${phase.skipped.length}`} />
             <NameStat label="Accuracy" value={`${accuracy}%`} />
@@ -371,21 +355,16 @@ function Summary({
       </header>
 
       {phase.skipped.length > 0 && (
-        <section className="border-t border-border pt-8">
-          <div className="mb-5 flex items-baseline justify-between">
-            <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
-              Missed
-            </span>
-            <span className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
+        <section className={classNames.componentsGameSessionConfig46}>
+          <div className={classNames.routesPlayName232}>
+            <span className={classNames.componentsGameGameHUD10}>Missed</span>
+            <span className={classNames.routesIndex178}>
               {phase.skipped.length}
             </span>
           </div>
-          <ul className="flex flex-wrap gap-2">
+          <ul className={classNames.componentsGameSessionConfig41}>
             {phase.skipped.map((c) => (
-              <li
-                key={c.id}
-                className="border border-destructive/30 px-3 py-1 font-serif text-sm text-muted-foreground italic"
-              >
+              <li key={c.id} className={classNames.routesPlayName233}>
                 {c.name}
               </li>
             ))}
@@ -393,28 +372,19 @@ function Summary({
         </section>
       )}
 
-      <div className="flex flex-wrap items-center gap-6 border-t border-border pt-8">
+      <div className={classNames.routesPlayLocate216}>
         <Button
           size="lg"
           onClick={onPlayAgain}
-          className="group/again gap-2 px-6 text-xs tracking-[0.3em] uppercase"
+          className={classNames.routesPlayLocate217}
         >
           Play again
-          <span
-            aria-hidden
-            className="transition-transform group-hover/again:translate-x-1"
-          >
+          <span aria-hidden className={classNames.routesPlayLocate218}>
             →
           </span>
         </Button>
-        <Link
-          to="/"
-          className="group inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
-        >
-          <span
-            aria-hidden
-            className="transition-transform group-hover:-translate-x-0.5"
-          >
+        <Link to="/" className={classNames.routesPlayLocate192}>
+          <span aria-hidden className={classNames.routesPlayLocate193}>
             ←
           </span>
           Atlas
@@ -426,11 +396,9 @@ function Summary({
 
 function NameStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-1">
-      <dt className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
-        {label}
-      </dt>
-      <dd className="font-serif text-lg font-normal tabular-nums">{value}</dd>
+    <div className={classNames.routesPlayLocate219}>
+      <dt className={classNames.routesPlayLocate220}>{label}</dt>
+      <dd className={classNames.routesPlayLocate221}>{value}</dd>
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react"
+import { classNames } from "@/ui.stylex"
 import { cn } from "@/lib/utils"
 
 type Stat = {
@@ -19,33 +20,29 @@ type Props = {
 export function GameHUD({ stats, timerPct, className }: Props) {
   const wide = stats.filter((s) => s.wide)
   const inline = stats.filter((s) => !s.wide)
-  // SAFETY: React style objects accept CSS custom properties; csstype's CSSProperties lacks an index signature for them.
-  const timerFill = {
-    "--timer-fill": `${Math.max(0, Math.min(100, timerPct ?? 0))}%`,
-  } as CSSProperties
 
   return (
-    <div className={cn("border-y border-border bg-card", className)}>
+    <div className={cn(classNames.componentsGameGameHUD6, className)}>
       {timerPct != null && (
-        <div className="h-px w-full bg-border/60">
+        <div className={classNames.componentsGameGameHUD7}>
           <div
-            className="h-full w-(--timer-fill) bg-primary transition-width duration-100 ease-linear"
-            style={timerFill}
+            className={classNames.componentsGameGameHUD8}
+            // SAFETY: React style objects accept CSS custom properties; csstype's CSSProperties lacks an index signature for them.
+            style={
+              {
+                "--timer-fill": `${Math.max(0, Math.min(100, timerPct))}%`,
+              } as CSSProperties
+            }
           />
         </div>
       )}
       {wide.map((s) => (
-        <div
-          key={s.label}
-          className="border-b border-border/60 px-5 py-4 last:border-b-0"
-        >
-          <div className="text-xs tracking-label text-muted-foreground uppercase">
-            {s.label}
-          </div>
+        <div key={s.label} className={classNames.componentsGameGameHUD9}>
+          <div className={classNames.componentsGameGameHUD10}>{s.label}</div>
           <div
             className={cn(
-              "mt-1.5 font-serif text-3xl leading-tight font-normal text-balance md:text-4xl",
-              s.accent && "text-primary italic"
+              classNames.componentsGameGameHUD11,
+              s.accent && classNames.componentsGameGameHUD12
             )}
           >
             {s.value}
@@ -53,16 +50,16 @@ export function GameHUD({ stats, timerPct, className }: Props) {
         </div>
       ))}
       {inline.length > 0 && (
-        <div className="grid grid-cols-stats divide-x divide-border">
+        <div className={classNames.componentsGameGameHUD13}>
           {inline.map((s) => (
-            <div key={s.label} className="px-5 py-3.5">
-              <div className="text-xs tracking-label text-muted-foreground uppercase">
+            <div key={s.label} className={classNames.componentsGameGameHUD14}>
+              <div className={classNames.componentsGameGameHUD10}>
                 {s.label}
               </div>
               <div
                 className={cn(
-                  "mt-1.5 truncate font-serif text-2xl leading-none font-normal tabular-nums md:text-3xl",
-                  s.accent && "text-primary italic"
+                  classNames.componentsGameGameHUD15,
+                  s.accent && classNames.componentsGameGameHUD12
                 )}
               >
                 {s.value}

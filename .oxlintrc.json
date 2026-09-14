@@ -117,7 +117,14 @@
     "shadcn/no-arbitrary-values": "error",
     "shadcn/no-inline-styles": "error",
     "shadcn/no-unknown-classes": "error",
-    "shadcn/require-static-classes": "error"
+    "shadcn/require-static-classes": [
+      "error",
+      {
+        "ignoreImports": [
+          "^@/components/ui"
+        ]
+      }
+    ]
   },
   "ignorePatterns": [
     "**/node_modules/**",

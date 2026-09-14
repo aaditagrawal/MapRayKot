@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { useMemo } from "react"
 
 import { makeProjection, pathGenerator, useWorld } from "@/lib/geo"
@@ -25,10 +26,7 @@ export function AtlasSilhouette({ className }: { className?: string }) {
     <svg
       viewBox={`0 0 ${VB_W} ${VB_H}`}
       xmlns="http://www.w3.org/2000/svg"
-      className={cn(
-        "pointer-events-none animate-in duration-700 fill-mode-both select-none fade-in",
-        className
-      )}
+      className={cn(classNames.componentsMapAtlasSilhouette49, className)}
       aria-hidden
     >
       {paths.map((d, i) => (

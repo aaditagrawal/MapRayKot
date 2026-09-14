@@ -1,3 +1,4 @@
+import { classNames } from "@/ui.stylex"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { RiMoonLine, RiSunLine } from "@remixicon/react"
@@ -28,7 +29,7 @@ export function ThemeToggle() {
           <RiMoonLine />
         )
       ) : (
-        <RiMoonLine className="opacity-0" />
+        <RiMoonLine className={classNames.componentsThemeToggle62} />
       )}
     </Button>
   )

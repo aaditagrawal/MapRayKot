@@ -41,13 +41,13 @@ function Hero() {
       />
 
       <div className="relative z-10 flex max-w-3xl flex-col items-center text-center">
-        <span className="mb-10 inline-flex animate-in items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase duration-300 fill-mode-both fade-in">
+        <span className="mb-10 inline-flex animate-in items-center gap-3 text-xs tracking-[0.4em] text-muted-foreground uppercase duration-300 fill-mode-both fade-in">
           <span className="h-px w-8 bg-border" />
           MapRayKot · An Atlas Game
           <span className="h-px w-8 bg-border" />
         </span>
 
-        <h1 className="animate-in font-serif text-5xl leading-[1.02] font-normal tracking-tight delay-75 duration-500 fill-mode-both fade-in slide-in-from-bottom-1 sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+        <h1 className="animate-in font-serif text-5xl leading-[1.02] font-normal tracking-tight delay-75 duration-500 fill-mode-both fade-in slide-in-from-bottom-1 sm:text-6xl md:text-7xl lg:text-8xl">
           Know the world,
           <br />
           <em className="text-primary italic">one country</em> at a time.
@@ -91,7 +91,7 @@ function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-in text-[10px] tracking-[0.4em] text-muted-foreground/60 uppercase delay-500 duration-500 fill-mode-both fade-in">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-in text-xs tracking-[0.4em] text-muted-foreground/60 uppercase delay-500 duration-500 fill-mode-both fade-in">
         scroll for your runs
       </div>
     </section>
@@ -102,7 +102,7 @@ function Modes() {
   return (
     <section className="border-t border-border">
       <div className="mx-auto max-w-5xl px-6 py-20 text-center md:py-28">
-        <span className="text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
+        <span className="text-xs tracking-[0.4em] text-muted-foreground uppercase">
           Two modes
         </span>
         <h2 className="mt-4 font-serif text-4xl leading-tight font-normal tracking-tight md:text-5xl">
@@ -172,7 +172,7 @@ function ModeBlock({
       <p className="max-w-sm text-sm leading-relaxed text-muted-foreground md:text-base">
         {body}
       </p>
-      <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] text-muted-foreground uppercase transition-colors group-hover:text-primary">
+      <span className="inline-flex items-center gap-2 text-xs tracking-[0.3em] text-muted-foreground uppercase transition-colors group-hover:text-primary">
         Begin
         <span
           aria-hidden
@@ -195,7 +195,7 @@ function History({
   return (
     <section className="border-b border-border">
       <div className="mx-auto max-w-5xl px-6 py-20 text-center md:py-28">
-        <span className="text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
+        <span className="text-xs tracking-[0.4em] text-muted-foreground uppercase">
           Your runs
         </span>
         <h2 className="mt-4 font-serif text-4xl leading-tight font-normal tracking-tight md:text-5xl">
@@ -248,11 +248,11 @@ function Ladder({
       )}
     >
       <div className="mb-8 flex items-baseline justify-between">
-        <span className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+        <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
           {label}
         </span>
         {rows.length > 0 && (
-          <span className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
+          <span className="text-xs tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
             {rows.length} run{rows.length === 1 ? "" : "s"}
           </span>
         )}
@@ -282,11 +282,11 @@ function Ladder({
                 <div className="font-serif text-3xl leading-none font-normal tabular-nums md:text-4xl">
                   {row.score}
                 </div>
-                <div className="mt-2 truncate text-[11px] text-muted-foreground">
+                <div className="mt-2 truncate text-xs text-muted-foreground">
                   {row.meta}
                 </div>
               </div>
-              <span className="text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase tabular-nums">
+              <span className="text-xs tracking-[0.2em] text-muted-foreground/70 uppercase tabular-nums">
                 {timeAgo(row.at)}
               </span>
             </li>
@@ -299,7 +299,7 @@ function Ladder({
 
 function Colophon() {
   return (
-    <footer className="px-6 py-10 text-center text-[10px] tracking-[0.4em] text-muted-foreground/70 uppercase">
+    <footer className="px-6 py-10 text-center text-xs tracking-[0.4em] text-muted-foreground/70 uppercase">
       <span className="inline-flex items-center gap-3">
         <span className="h-px w-6 bg-border" />
         End of the atlas

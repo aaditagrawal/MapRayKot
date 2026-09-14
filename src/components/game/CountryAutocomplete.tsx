@@ -81,7 +81,7 @@ export function CountryAutocomplete({
         autoCorrect="off"
         spellCheck={false}
         placeholder={placeholder}
-        className="h-12 text-base"
+        className="h-12"
       />
       {suggestions.length > 0 && value.trim() && (
         <div className="absolute inset-x-0 top-full z-20 mt-1 border bg-popover text-popover-foreground shadow-sm">

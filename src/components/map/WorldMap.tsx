@@ -39,7 +39,7 @@ export function WorldMap(props: Props) {
     return (
       <div
         className={cn(
-          "flex aspect-[12/6.5] w-full flex-col items-center justify-center gap-3 bg-[var(--color-map-ocean)] p-6 text-center",
+          "flex aspect-24/13 w-full flex-col items-center justify-center gap-3 bg-map-ocean p-6 text-center",
           props.className
         )}
         role="alert"
@@ -59,7 +59,7 @@ export function WorldMap(props: Props) {
     return (
       <div
         className={cn(
-          "flex aspect-[12/6.5] w-full items-center justify-center bg-[var(--color-map-ocean)]",
+          "flex aspect-24/13 w-full items-center justify-center bg-map-ocean",
           props.className
         )}
         aria-busy="true"

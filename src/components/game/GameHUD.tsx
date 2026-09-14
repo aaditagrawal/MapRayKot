@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 
 type Stat = {
@@ -18,14 +19,18 @@ type Props = {
 export function GameHUD({ stats, timerPct, className }: Props) {
   const wide = stats.filter((s) => s.wide)
   const inline = stats.filter((s) => !s.wide)
+  // SAFETY: React style objects accept CSS custom properties; csstype's CSSProperties lacks an index signature for them.
+  const timerFill = {
+    "--timer-fill": `${Math.max(0, Math.min(100, timerPct ?? 0))}%`,
+  } as CSSProperties
 
   return (
     <div className={cn("border-y border-border bg-card", className)}>
       {timerPct != null && (
         <div className="h-px w-full bg-border/60">
           <div
-            className="h-full bg-primary transition-[width] duration-100 ease-linear"
-            style={{ width: `${Math.max(0, Math.min(100, timerPct))}%` }}
+            className="h-full w-(--timer-fill) bg-primary transition-[width] duration-100 ease-linear"
+            style={timerFill}
           />
         </div>
       )}
@@ -34,7 +39,7 @@ export function GameHUD({ stats, timerPct, className }: Props) {
           key={s.label}
           className="border-b border-border/60 px-5 py-4 last:border-b-0"
         >
-          <div className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+          <div className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
             {s.label}
           </div>
           <div
@@ -51,7 +56,7 @@ export function GameHUD({ stats, timerPct, className }: Props) {
         <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] divide-x divide-border">
           {inline.map((s) => (
             <div key={s.label} className="px-5 py-3.5">
-              <div className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+              <div className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
                 {s.label}
               </div>
               <div

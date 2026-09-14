@@ -47,7 +47,7 @@ export function SessionConfig({
   return (
     <div className="space-y-12 py-4 md:py-8">
       <header className="space-y-5">
-        <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
+        <span className="inline-flex items-center gap-3 text-xs tracking-[0.4em] text-muted-foreground uppercase">
           <span className="h-px w-6 bg-border" />
           New session
         </span>
@@ -77,7 +77,7 @@ export function SessionConfig({
                 </legend>
                 <span className="font-serif text-base text-muted-foreground tabular-nums">
                   {value}
-                  <span className="ml-1 text-[10px] tracking-[0.2em] uppercase">
+                  <span className="ml-1 text-xs tracking-[0.2em] uppercase">
                     {g.unit}
                   </span>
                 </span>
@@ -94,7 +94,7 @@ export function SessionConfig({
                         setCustom((cu) => ({ ...cu, [g.key]: false }))
                       }}
                       className={cn(
-                        "h-9 min-w-[3.25rem] border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
+                        "h-9 min-w-13 border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
                         active
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
@@ -110,7 +110,7 @@ export function SessionConfig({
                     setCustom((cu) => ({ ...cu, [g.key]: !cu[g.key] }))
                   }
                   className={cn(
-                    "h-9 min-w-[3.25rem] border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
+                    "h-9 min-w-13 border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
                     isCustom
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
@@ -148,7 +148,7 @@ export function SessionConfig({
       <div className="border-t border-border pt-8">
         <Button
           size="lg"
-          className="group/cta w-full justify-between text-xs tracking-[0.3em] uppercase"
+          className="group/cta w-full justify-between"
           onClick={() => onStart(values)}
         >
           <span>{ctaLabel}</span>

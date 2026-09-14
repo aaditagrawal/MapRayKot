@@ -86,7 +86,7 @@ export function CountryInset({ targetId, className }: Props) {
     return (
       <div
         className={cn(
-          "flex aspect-[3/2] w-full items-center justify-center bg-[var(--color-map-ocean)] p-2 text-center text-xs text-muted-foreground",
+          "flex aspect-3/2 w-full items-center justify-center bg-map-ocean p-2 text-center text-xs text-muted-foreground",
           className
         )}
       >

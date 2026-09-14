@@ -57,6 +57,45 @@
     --color-map-wrong: var(--map-wrong);
     --color-map-stroke: var(--map-stroke);
     --color-map-graticule: var(--map-graticule);
+
+    /* Tracked-caps scale used by eyebrow/label micro-typography. */
+    --tracking-eyebrow: 0.4em;
+    --tracking-label: 0.3em;
+    --tracking-hint: 0.25em;
+    --tracking-meta: 0.2em;
+    --tracking-option: 0.18em;
+
+    /* Display-heading line-heights, between leading-none and leading-tight. */
+    --leading-hero: 1.02;
+    --leading-display: 1.05;
+
+    --transition-property-width: width;
+
+    --grid-template-columns-ledger: auto 1fr auto;
+    --grid-template-columns-rounds: auto 1fr auto auto;
+    --grid-template-columns-stats: repeat(auto-fit, minmax(120px, 1fr));
+    --grid-template-columns-stage: 1fr 360px;
+}
+
+/* Oversized hero silhouette: intentionally bleeds past the viewport. */
+@utility hero-map-size {
+    width: 180%;
+    max-width: none;
+
+    @media (min-width: theme(--breakpoint-sm)) {
+        width: 140%;
+    }
+    @media (min-width: theme(--breakpoint-md)) {
+        width: 120%;
+    }
+    @media (min-width: theme(--breakpoint-lg)) {
+        width: 105%;
+    }
+}
+
+/* Radial fade that lifts the hero copy off the silhouette. */
+@utility hero-vignette {
+    background: radial-gradient(ellipse 70% 55% at center, transparent 20%, var(--background) 88%);
 }
 
 /* Catppuccin Latte — blue-anchored light theme */

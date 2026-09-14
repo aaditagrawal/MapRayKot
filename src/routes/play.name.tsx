@@ -102,7 +102,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       <nav className="mb-8 flex items-center justify-between md:mb-12">
         <Link
           to="/"
-          className="group inline-flex items-center gap-2 text-xs tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-xs tracking-label text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
           <span
             aria-hidden
@@ -112,7 +112,7 @@ function Shell({ children }: { children: React.ReactNode }) {
           </span>
           <span>Atlas</span>
         </Link>
-        <span className="inline-flex items-baseline gap-3 text-xs tracking-[0.4em] text-muted-foreground uppercase">
+        <span className="inline-flex items-baseline gap-3 text-xs tracking-eyebrow text-muted-foreground uppercase">
           <span className="font-serif text-base tracking-normal text-muted-foreground/70 normal-case italic">
             II.
           </span>
@@ -263,7 +263,7 @@ function Active({
           { label: "Skipped", value: `${phase.skipped.length}` },
         ]}
       />
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="grid gap-6 lg:grid-cols-stage">
         <div className="border border-border bg-card">
           <WorldMap
             targetId={target.id}
@@ -275,7 +275,7 @@ function Active({
         <div className="flex flex-col gap-5">
           <section className="border border-border bg-card">
             <div className="flex items-baseline justify-between border-b border-border/60 px-4 py-3">
-              <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
+              <span className="text-xs tracking-label text-muted-foreground uppercase">
                 Region
               </span>
               <span className="font-serif text-sm text-muted-foreground/70 italic">
@@ -289,7 +289,7 @@ function Active({
 
           <section className="border border-border bg-card">
             <div className="flex items-baseline justify-between border-b border-border/60 px-4 py-3">
-              <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
+              <span className="text-xs tracking-label text-muted-foreground uppercase">
                 Your answer
               </span>
               <span className="font-serif text-sm text-muted-foreground/70 italic">
@@ -314,7 +314,7 @@ function Active({
 
           {phase.flash && (
             <div className="border border-destructive/50 bg-destructive/[0.05] px-4 py-3">
-              <div className="text-xs tracking-[0.3em] text-destructive/80 uppercase">
+              <div className="text-xs tracking-label text-destructive/80 uppercase">
                 Skipped
               </div>
               <div className="mt-1 font-serif text-xl italic">
@@ -325,7 +325,7 @@ function Active({
         </div>
       </div>
 
-      <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs tracking-[0.25em] text-muted-foreground uppercase">
+      <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs tracking-hint text-muted-foreground uppercase">
         <span>Type the highlighted country</span>
         <span aria-hidden>·</span>
         <span>Enter submits</span>
@@ -350,7 +350,7 @@ function Summary({
   return (
     <div className="space-y-12 py-4 md:py-8">
       <header className="space-y-6">
-        <span className="inline-flex items-center gap-3 text-xs tracking-[0.4em] text-muted-foreground uppercase">
+        <span className="inline-flex items-center gap-3 text-xs tracking-eyebrow text-muted-foreground uppercase">
           <span className="h-px w-6 bg-border" />
           Session complete
         </span>
@@ -373,10 +373,10 @@ function Summary({
       {phase.skipped.length > 0 && (
         <section className="border-t border-border pt-8">
           <div className="mb-5 flex items-baseline justify-between">
-            <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
+            <span className="text-xs tracking-label text-muted-foreground uppercase">
               Missed
             </span>
-            <span className="text-xs tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
+            <span className="text-xs tracking-label text-muted-foreground/60 uppercase tabular-nums">
               {phase.skipped.length}
             </span>
           </div>
@@ -409,7 +409,7 @@ function Summary({
         </Button>
         <Link
           to="/"
-          className="group inline-flex items-center gap-2 text-xs tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-xs tracking-label text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
           <span
             aria-hidden
@@ -427,7 +427,7 @@ function Summary({
 function NameStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="space-y-1">
-      <dt className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+      <dt className="text-xs tracking-meta text-muted-foreground uppercase">
         {label}
       </dt>
       <dd className="font-serif text-lg font-normal tabular-nums">{value}</dd>

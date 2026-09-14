@@ -142,7 +142,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       <nav className="mb-8 flex items-center justify-between md:mb-12">
         <Link
           to="/"
-          className="group inline-flex items-center gap-2 text-xs tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-xs tracking-label text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
           <span
             aria-hidden
@@ -152,7 +152,7 @@ function Shell({ children }: { children: React.ReactNode }) {
           </span>
           <span>Atlas</span>
         </Link>
-        <span className="inline-flex items-baseline gap-3 text-xs tracking-[0.4em] text-muted-foreground uppercase">
+        <span className="inline-flex items-baseline gap-3 text-xs tracking-eyebrow text-muted-foreground uppercase">
           <span className="font-serif text-base tracking-normal text-muted-foreground/70 normal-case italic">
             I.
           </span>
@@ -351,7 +351,7 @@ function ActiveRound({
         </div>
       )}
       {phase.kind === "playing" && (
-        <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs tracking-[0.25em] text-muted-foreground uppercase">
+        <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs tracking-hint text-muted-foreground uppercase">
           <span>Tap to pin</span>
           <span aria-hidden>·</span>
           <span>Drag to pan</span>
@@ -379,7 +379,7 @@ function Summary({
   return (
     <div className="space-y-12 py-4 md:py-8">
       <header className="space-y-6">
-        <span className="inline-flex items-center gap-3 text-xs tracking-[0.4em] text-muted-foreground uppercase">
+        <span className="inline-flex items-center gap-3 text-xs tracking-eyebrow text-muted-foreground uppercase">
           <span className="h-px w-6 bg-border" />
           Session complete
         </span>
@@ -402,10 +402,10 @@ function Summary({
 
       <section className="border-t border-border pt-8">
         <div className="mb-6 flex items-baseline justify-between">
-          <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
+          <span className="text-xs tracking-label text-muted-foreground uppercase">
             Round by round
           </span>
-          <span className="text-xs tracking-[0.3em] text-muted-foreground/60 uppercase tabular-nums">
+          <span className="text-xs tracking-label text-muted-foreground/60 uppercase tabular-nums">
             {phase.history.length} round{phase.history.length === 1 ? "" : "s"}
           </span>
         </div>
@@ -413,13 +413,13 @@ function Summary({
           {phase.history.map((h, i) => (
             <li
               key={i}
-              className="grid grid-cols-[auto_1fr_auto_auto] items-baseline gap-5 py-4"
+              className="grid grid-cols-rounds items-baseline gap-5 py-4"
             >
               <span className="font-serif text-lg text-muted-foreground/60 italic tabular-nums">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="truncate text-sm">{h.country.name}</span>
-              <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase tabular-nums">
+              <span className="text-xs tracking-meta text-muted-foreground uppercase tabular-nums">
                 {h.missed
                   ? "time up"
                   : h.inside
@@ -455,7 +455,7 @@ function Summary({
         </Button>
         <Link
           to="/"
-          className="group inline-flex items-center gap-2 text-xs tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-xs tracking-label text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
           <span
             aria-hidden
@@ -473,7 +473,7 @@ function Summary({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="space-y-1">
-      <dt className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+      <dt className="text-xs tracking-meta text-muted-foreground uppercase">
         {label}
       </dt>
       <dd className="font-serif text-lg font-normal tabular-nums">{value}</dd>

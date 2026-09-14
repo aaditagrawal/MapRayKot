@@ -35,7 +35,7 @@ export function RoundFeedback({ country, km, inside, points, missed }: Props) {
   return (
     <div className={cn("border p-5", toneCls)}>
       <div className="flex items-baseline justify-between gap-3">
-        <span className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
+        <span className="text-xs tracking-label text-muted-foreground uppercase">
           {eyebrow}
         </span>
         <span className="font-serif text-base text-muted-foreground italic">

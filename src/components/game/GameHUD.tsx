@@ -29,7 +29,7 @@ export function GameHUD({ stats, timerPct, className }: Props) {
       {timerPct != null && (
         <div className="h-px w-full bg-border/60">
           <div
-            className="h-full w-(--timer-fill) bg-primary transition-[width] duration-100 ease-linear"
+            className="h-full w-(--timer-fill) bg-primary transition-width duration-100 ease-linear"
             style={timerFill}
           />
         </div>
@@ -39,7 +39,7 @@ export function GameHUD({ stats, timerPct, className }: Props) {
           key={s.label}
           className="border-b border-border/60 px-5 py-4 last:border-b-0"
         >
-          <div className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
+          <div className="text-xs tracking-label text-muted-foreground uppercase">
             {s.label}
           </div>
           <div
@@ -53,10 +53,10 @@ export function GameHUD({ stats, timerPct, className }: Props) {
         </div>
       ))}
       {inline.length > 0 && (
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] divide-x divide-border">
+        <div className="grid grid-cols-stats divide-x divide-border">
           {inline.map((s) => (
             <div key={s.label} className="px-5 py-3.5">
-              <div className="text-xs tracking-[0.3em] text-muted-foreground uppercase">
+              <div className="text-xs tracking-label text-muted-foreground uppercase">
                 {s.label}
               </div>
               <div

@@ -47,11 +47,11 @@ export function SessionConfig({
   return (
     <div className="space-y-12 py-4 md:py-8">
       <header className="space-y-5">
-        <span className="inline-flex items-center gap-3 text-xs tracking-[0.4em] text-muted-foreground uppercase">
+        <span className="inline-flex items-center gap-3 text-xs tracking-eyebrow text-muted-foreground uppercase">
           <span className="h-px w-6 bg-border" />
           New session
         </span>
-        <h2 className="font-serif text-4xl leading-[1.05] font-normal tracking-tight md:text-5xl">
+        <h2 className="font-serif text-4xl leading-display font-normal tracking-tight md:text-5xl">
           <em className="text-primary italic">{accent}</em>
           {rest && ` ${rest}`}.
         </h2>
@@ -77,7 +77,7 @@ export function SessionConfig({
                 </legend>
                 <span className="font-serif text-base text-muted-foreground tabular-nums">
                   {value}
-                  <span className="ml-1 text-xs tracking-[0.2em] uppercase">
+                  <span className="ml-1 text-xs tracking-meta uppercase">
                     {g.unit}
                   </span>
                 </span>
@@ -94,7 +94,7 @@ export function SessionConfig({
                         setCustom((cu) => ({ ...cu, [g.key]: false }))
                       }}
                       className={cn(
-                        "h-9 min-w-13 border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
+                        "h-9 min-w-13 border px-3 text-xs tracking-option uppercase transition-colors",
                         active
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"
@@ -110,7 +110,7 @@ export function SessionConfig({
                     setCustom((cu) => ({ ...cu, [g.key]: !cu[g.key] }))
                   }
                   className={cn(
-                    "h-9 min-w-13 border px-3 text-xs tracking-[0.18em] uppercase transition-colors",
+                    "h-9 min-w-13 border px-3 text-xs tracking-option uppercase transition-colors",
                     isCustom
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border text-muted-foreground hover:border-foreground/60 hover:text-foreground"

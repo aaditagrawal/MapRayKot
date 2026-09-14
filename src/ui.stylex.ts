@@ -64,6 +64,7 @@ export const styles = stylex.create({
   },
   componentsGameGameHUD8: {
     height: "100%",
+    width: "var(--timer-fill)",
     backgroundColor: "var(--primary)",
     transitionProperty: "width",
     transitionTimingFunction: "linear",
@@ -1291,6 +1292,8 @@ export const styles = stylex.create({
     pointerEvents: "none",
     position: "absolute",
     inset: "0",
+    backgroundImage:
+      "radial-gradient(ellipse 70% 55% at center, transparent 20%, var(--background) 88%)",
   },
   routesIndex148: {
     position: "relative",

@@ -16,7 +16,8 @@
     {
       "name": "anti-slop",
       "specifier": "./tools/oxlint/anti-slop/index.ts"
-    }
+    },
+    "@shadcn/lint"
   ],
   "categories": {
     "correctness": "error",
@@ -96,7 +97,34 @@
     "anti-slop/no-unknown-type-aliases": "error",
     "anti-slop/no-unsafe-dictionary-type": "error",
     "anti-slop/no-widen-then-assert": "error",
-    "anti-slop/require-safety-comment-for-type-assertion": "error"
+    "anti-slop/require-safety-comment-for-type-assertion": "error",
+    "shadcn/no-restyle": [
+      "error",
+      {
+        "allow": [
+          "layout"
+        ]
+      }
+    ],
+    "shadcn/no-raw-colors": [
+      "error",
+      {
+        "allow": [
+          "fill-mode-*"
+        ]
+      }
+    ],
+    "shadcn/no-arbitrary-values": "error",
+    "shadcn/no-inline-styles": "error",
+    "shadcn/no-unknown-classes": "error",
+    "shadcn/require-static-classes": [
+      "error",
+      {
+        "ignoreImports": [
+          "^@/components/ui"
+        ]
+      }
+    ]
   },
   "ignorePatterns": [
     "**/node_modules/**",
@@ -157,6 +185,16 @@
         "no-console": "off",
         "import/no-anonymous-default-export": "off",
         "react/only-export-components": "off"
+      }
+    },
+    {
+      "files": [
+        "src/components/ui/**"
+      ],
+      "rules": {
+        "shadcn/no-restyle": "off",
+        "shadcn/no-arbitrary-values": "off",
+        "shadcn/require-static-classes": "off"
       }
     }
   ]

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react"
 import { classNames } from "@/ui.stylex"
 import { cn } from "@/lib/utils"
 
@@ -26,7 +27,12 @@ export function GameHUD({ stats, timerPct, className }: Props) {
         <div className={classNames.componentsGameGameHUD7}>
           <div
             className={classNames.componentsGameGameHUD8}
-            style={{ width: `${Math.max(0, Math.min(100, timerPct))}%` }}
+            // SAFETY: React style objects accept CSS custom properties; csstype's CSSProperties lacks an index signature for them.
+            style={
+              {
+                "--timer-fill": `${Math.max(0, Math.min(100, timerPct))}%`,
+              } as CSSProperties
+            }
           />
         </div>
       )}

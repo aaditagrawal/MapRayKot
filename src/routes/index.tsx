@@ -33,13 +33,7 @@ function Hero() {
       <div className={classNames.routesIndex145}>
         <AtlasSilhouette className={classNames.routesIndex146} />
       </div>
-      <div
-        className={classNames.routesIndex147}
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 55% at center, transparent 20%, var(--background) 88%)",
-        }}
-      />
+      <div className={classNames.routesIndex147} />
 
       <div className={classNames.routesIndex148}>
         <span className={classNames.routesIndex149}>

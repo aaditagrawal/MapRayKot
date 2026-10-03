@@ -1,20 +1,15 @@
 import { useCallback, useEffect, useState } from "react"
-import {
-  geoBounds,
-  geoCentroid,
-  geoContains,
-  geoEqualEarth,
-  geoPath,
-} from "d3-geo"
+import { geoEqualEarth, geoPath } from "d3-geo"
 import type { GeoPermissibleObjects, GeoProjection } from "d3-geo"
 import type { Feature, MultiPolygon, Polygon } from "geojson"
+
+import { mergeCountryFeatures } from "./world-features"
 
 export type CountryFeature = Feature<Polygon | MultiPolygon, { name?: string }>
 
 export type WorldData = {
   features: Array<CountryFeature>
   featuresById: Map<string, CountryFeature>
-  indiaFeature: CountryFeature | null
 }
 
 let cache: Promise<WorldData> | null = null
@@ -33,13 +28,12 @@ export function loadWorld(): Promise<WorldData> {
     if (!Array.isArray(payload?.features)) {
       throw new Error("world data is not a FeatureCollection")
     }
-    const features: Array<CountryFeature> = payload.features
+    const features = mergeCountryFeatures(payload.features)
     const featuresById = new Map<string, CountryFeature>()
     for (const f of features) {
       if (f.id != null) featuresById.set(String(f.id), f)
     }
-    const indiaFeature = featuresById.get("356") ?? null
-    const data: WorldData = { features, featuresById, indiaFeature }
+    const data = { features, featuresById }
     resolved = data
     return data
   })()
@@ -109,32 +103,7 @@ export function makeProjection(
   return geoEqualEarth().fitSize([width, height], fitTarget)
 }
 
-/** Ordered hit-test: India claim first, then the rest. Returns first containing feature. */
-export function hitTest(
-  lonLat: [number, number],
-  world: WorldData
-): CountryFeature | null {
-  if (world.indiaFeature && geoContains(world.indiaFeature, lonLat)) {
-    return world.indiaFeature
-  }
-  for (const f of world.features) {
-    if (f === world.indiaFeature) continue
-    if (geoContains(f, lonLat)) return f
-  }
-  return null
-}
-
 /** Memoization helper keyed by feature identity. */
 export function pathGenerator(projection: GeoProjection) {
   return geoPath(projection)
-}
-
-export function featureCentroid(f: CountryFeature): [number, number] {
-  return geoCentroid(f)
-}
-
-export function featureBounds(
-  f: CountryFeature
-): [[number, number], [number, number]] {
-  return geoBounds(f)
 }

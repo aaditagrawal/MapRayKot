@@ -68,9 +68,6 @@ export type NameRun = {
   at: number
 }
 
-export type LocateBest = LocateRun
-export type NameBest = NameRun
-
 function byScoreThenRecency<T extends { score: number; at: number }>(
   a: T,
   b: T
@@ -113,14 +110,6 @@ export function historyName(): Array<NameRun> {
     runs.push({ score, correct, skipped, totalSeconds, at })
   }
   return runs.sort(byScoreThenRecency)
-}
-
-export function bestLocate(): LocateRun | null {
-  return historyLocate()[0] ?? null
-}
-
-export function bestName(): NameRun | null {
-  return historyName()[0] ?? null
 }
 
 export function saveLocateBest(next: LocateRun): LocateRun {

@@ -7,6 +7,7 @@ import { resolve } from "node:path"
 import { feature } from "topojson-client"
 import polygonClipping from "polygon-clipping"
 import simplify from "@turf/simplify"
+import { mergeCountryFeatures } from "../src/lib/world-features"
 import { ISO_META } from "./iso-meta.ts"
 import type {
   Pair,
@@ -164,42 +165,43 @@ function main() {
   }
 
   // Diff PAK & CHN against the India claim, replace India with claim.
-  const next: Array<Feature<Polygon | MultiPolygon>> = fc.features.map((f) => {
-    if (f.id === IN_ID) {
-      return {
-        ...f,
-        geometry: {
-          type: "MultiPolygon",
-          coordinates: fixWinding(round(simplifyMP(indiaClaim), 4)),
-        },
+  const next: Array<Feature<Polygon | MultiPolygon, CountryProperties>> =
+    fc.features.map((f) => {
+      if (f.id === IN_ID) {
+        return {
+          ...f,
+          geometry: {
+            type: "MultiPolygon",
+            coordinates: fixWinding(round(simplifyMP(indiaClaim), 4)),
+          },
+        }
       }
-    }
-    if (f.id === PAK_ID || f.id === CHN_ID) {
+      if (f.id === PAK_ID || f.id === CHN_ID) {
+        const src = toMultiPolygonCoords(f.geometry)
+        const diffed = polygonClipping.difference(src, indiaClaim)
+        return {
+          ...f,
+          geometry: {
+            type: "MultiPolygon",
+            coordinates: fixWinding(round(simplifyMP(diffed), 4)),
+          },
+        }
+      }
+      // Round unchanged features to reduce file size.
       const src = toMultiPolygonCoords(f.geometry)
-      const diffed = polygonClipping.difference(src, indiaClaim)
+      const rounded = round(src, 3)
       return {
         ...f,
-        geometry: {
-          type: "MultiPolygon",
-          coordinates: fixWinding(round(simplifyMP(diffed), 4)),
-        },
+        geometry:
+          f.geometry.type === "Polygon"
+            ? { type: "Polygon", coordinates: rounded[0] }
+            : { type: "MultiPolygon", coordinates: rounded },
       }
-    }
-    // Round unchanged features to reduce file size.
-    const src = toMultiPolygonCoords(f.geometry)
-    const rounded = round(src, 3)
-    return {
-      ...f,
-      geometry:
-        f.geometry.type === "Polygon"
-          ? { type: "Polygon", coordinates: rounded[0] }
-          : { type: "MultiPolygon", coordinates: rounded },
-    }
-  })
+    })
 
   const outFc: FeatureCollection<Polygon | MultiPolygon> = {
     type: "FeatureCollection",
-    features: next,
+    features: mergeCountryFeatures(next),
   }
 
   console.log("[build-world] writing FeatureCollection…")

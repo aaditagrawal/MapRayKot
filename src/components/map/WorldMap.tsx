@@ -162,13 +162,6 @@ function WorldMapInner({
     onLocateClick(lonLat)
   }
 
-  // Clear hover on pointerleave (in case pointerleave on a path is missed)
-  useEffect(() => {
-    const onUp = () => setHoverId((h) => h)
-    window.addEventListener("pointerup", onUp)
-    return () => window.removeEventListener("pointerup", onUp)
-  }, [])
-
   const variantFor = (id: string) => {
     if (wrongId && id === wrongId) return "wrong" as const
     if (solvedIds && solvedIds.has(id)) return "correct" as const

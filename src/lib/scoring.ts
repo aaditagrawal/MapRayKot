@@ -96,5 +96,3 @@ export function scoreForDistanceKm(km: number, inside: boolean): number {
   if (km <= 5000) return Math.round(100 - ((km - 2000) / 3000) * 100)
   return 0
 }
-
-export const LOCATE_MAX_PER_TURN = 1000

@@ -31,9 +31,6 @@ function buildCountries(): Array<Country> {
 }
 
 export const COUNTRIES: ReadonlyArray<Country> = buildCountries()
-export const COUNTRIES_BY_ID: ReadonlyMap<string, Country> = new Map(
-  COUNTRIES.map((c) => [c.id, c])
-)
 
 export function randomCountries(
   n: number,

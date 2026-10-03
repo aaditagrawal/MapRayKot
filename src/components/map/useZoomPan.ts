@@ -61,7 +61,6 @@ export function useZoomPan(opts: UseZoomPanOpts) {
   const pinch = useRef<PinchState | null>(null)
   const pan = useRef<PanState | null>(null)
   const moved = useRef(false)
-  const downAt = useRef<Pointer | null>(null)
 
   const clampScale = useCallback(
     (k: number) => Math.min(maxScale, Math.max(minScale, k)),
@@ -134,7 +133,6 @@ export function useZoomPan(opts: UseZoomPanOpts) {
       pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
 
       if (pointers.current.size === 1) {
-        downAt.current = { x: e.clientX, y: e.clientY }
         moved.current = false
         pan.current = {
           pointerId: e.pointerId,
@@ -216,7 +214,6 @@ export function useZoomPan(opts: UseZoomPanOpts) {
       pan.current = null
       pinch.current = null
       moved.current = false
-      downAt.current = null
       return wasMoved
     }
     if (remaining === 1) {

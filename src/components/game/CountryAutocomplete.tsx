@@ -56,14 +56,6 @@ export function CountryAutocomplete({
         onChange={(e) => {
           const next = e.target.value
           setValue(next)
-          // auto-submit when typed value exactly matches an alias
-          for (const c of pool) {
-            if (isMatch(next, c)) {
-              onSolve(c)
-              setValue("")
-              return
-            }
-          }
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {

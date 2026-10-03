@@ -222,7 +222,12 @@ function ActiveRound({
   }, [phase.kind, phase.index])
 
   useEffect(() => {
-    if (phase.kind !== "playing" || turnStartedAt == null || perTurnMs == null)
+    if (
+      !world ||
+      phase.kind !== "playing" ||
+      turnStartedAt == null ||
+      perTurnMs == null
+    )
       return
     const elapsed = performance.now() - turnStartedAt
     if (elapsed < perTurnMs) return
@@ -230,7 +235,7 @@ function ActiveRound({
     expiredRef.current = true
     // Auto-advance on expire (missed)
     resolveRound(null)
-  }, [tick, phase.kind, turnStartedAt, perTurnMs, resolveRound])
+  }, [tick, phase.kind, turnStartedAt, perTurnMs, resolveRound, world])
 
   const advance = () => {
     if (phase.kind !== "feedback") return

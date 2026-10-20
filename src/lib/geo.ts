@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 import {
   geoBounds,
   geoCentroid,
@@ -19,9 +19,28 @@ export type WorldData = {
 
 let cache: Promise<WorldData> | null = null
 let resolved: WorldData | null = null
+const listeners = new Set<() => void>()
+const initialWorldSnapshot = { data: null, error: null, loading: true }
+let worldSnapshot: Omit<WorldState, "retry"> = initialWorldSnapshot
+
+function publishWorld(snapshot: Omit<WorldState, "retry">) {
+  worldSnapshot = snapshot
+  for (const notify of listeners) notify()
+}
+
+function subscribeWorld(notify: () => void) {
+  listeners.add(notify)
+  void loadWorld().catch(() => {})
+  return () => { listeners.delete(notify) }
+}
+
+const getWorldSnapshot = () => worldSnapshot
+const getServerWorldSnapshot = () => initialWorldSnapshot
+const retryWorld = () => { void loadWorld().catch(() => {}) }
 
 export function loadWorld(): Promise<WorldData> {
   if (cache) return cache
+  publishWorld({ data: resolved, error: null, loading: true })
   const p = (async () => {
     const res = await fetch("/world.json")
     if (!res.ok)
@@ -41,10 +60,13 @@ export function loadWorld(): Promise<WorldData> {
     const indiaFeature = featuresById.get("356") ?? null
     const data: WorldData = { features, featuresById, indiaFeature }
     resolved = data
+    publishWorld({ data, error: null, loading: false })
     return data
   })()
-  p.catch(() => {
-    if (cache === p) cache = null
+  p.catch((error) => {
+    if (cache !== p) return
+    cache = null
+    publishWorld({ data: resolved, error: error instanceof Error ? error : new Error(String(error)), loading: false })
   })
   cache = p
   return p
@@ -58,40 +80,8 @@ export type WorldState = {
 }
 
 export function useWorld(): WorldState {
-  const [data, setData] = useState<WorldData | null>(() => resolved)
-  const [error, setError] = useState<Error | null>(null)
-  const [loading, setLoading] = useState(() => resolved == null)
-  const [attempt, setAttempt] = useState(0)
-
-  useEffect(() => {
-    let cancelled = false
-    if (resolved && attempt === 0) {
-      setData(resolved)
-      setLoading(false)
-      return
-    }
-    setLoading(true)
-    setError(null)
-    void (async () => {
-      try {
-        const d = await loadWorld()
-        if (cancelled) return
-        setData(d)
-      } catch (err) {
-        if (cancelled) return
-        setError(err instanceof Error ? err : new Error(String(err)))
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    })()
-    return () => {
-      cancelled = true
-    }
-  }, [attempt])
-
-  const retry = useCallback(() => setAttempt((n) => n + 1), [])
-
-  return { data, error, loading, retry }
+  const snapshot = useSyncExternalStore(subscribeWorld, getWorldSnapshot, getServerWorldSnapshot)
+  return { ...snapshot, retry: retryWorld }
 }
 
 if ("window" in globalThis) {

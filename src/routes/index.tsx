@@ -1,6 +1,6 @@
 import { classNames } from "@/ui.stylex"
 import { Link, createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useMemo, useSyncExternalStore } from "react"
 import type { LocateRun, NameRun } from "@/lib/storage"
 import { AtlasSilhouette } from "@/components/map/AtlasSilhouette"
 import { historyLocate, historyName } from "@/lib/storage"
@@ -8,14 +8,14 @@ import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/")({ component: Home })
 
-function Home() {
-  const [locate, setLocate] = useState<Array<LocateRun>>([])
-  const [name, setName] = useState<Array<NameRun>>([])
+const subscribeToClient = () => () => {}
+const clientSnapshot = () => true
+const serverSnapshot = () => false
 
-  useEffect(() => {
-    setLocate(historyLocate())
-    setName(historyName())
-  }, [])
+function Home() {
+  const isClient = useSyncExternalStore(subscribeToClient, clientSnapshot, serverSnapshot)
+  const locate = useMemo(() => isClient ? historyLocate() : [], [isClient])
+  const name = useMemo(() => isClient ? historyName() : [], [isClient])
 
   return (
     <main className={classNames.componentsGameCountryAutocomplete0}>

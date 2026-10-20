@@ -168,7 +168,7 @@ function ActiveRound({
   world: WorldData | null
   onComplete: (p: Phase) => void
 }) {
-  const [tick, setTick] = useState(0)
+  const [tick, setTick] = useState(() => performance.now())
   const target = phase.queue[phase.index]
   const turnStartedAt = phase.kind === "playing" ? phase.turnStartedAt : null
   const perTurnMs = phase.kind === "playing" ? phase.perTurnMs : null
@@ -217,7 +217,7 @@ function ActiveRound({
   useEffect(() => {
     if (phase.kind !== "playing") return
     expiredRef.current = false
-    const id = setInterval(() => setTick((t) => t + 1), 100)
+    const id = setInterval(() => setTick(performance.now()), 100)
     return () => clearInterval(id)
   }, [phase.kind, phase.index])
 
@@ -267,8 +267,7 @@ function ActiveRound({
 
   let timerPct = 100
   if (phase.kind === "playing") {
-    void tick
-    const elapsed = performance.now() - phase.turnStartedAt
+    const elapsed = Math.max(0, tick - phase.turnStartedAt)
     timerPct = Math.max(0, 100 - (elapsed / phase.perTurnMs) * 100)
   }
 

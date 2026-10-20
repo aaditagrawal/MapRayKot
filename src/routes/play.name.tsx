@@ -124,15 +124,15 @@ function Active({
   phase: Extract<Phase, { kind: "playing" }>
   setPhase: (p: Phase) => void
 }) {
-  const [tick, setTick] = useState(0)
+  const [tick, setTick] = useState(() => performance.now())
   const endedRef = useRef(false)
 
   useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 200)
+    const id = setInterval(() => setTick(performance.now()), 200)
     return () => clearInterval(id)
   }, [])
 
-  const elapsedMs = tick >= 0 ? performance.now() - phase.startedAt : 0
+  const elapsedMs = Math.max(0, tick - phase.startedAt)
   const timerPct = Math.max(0, 100 - (elapsedMs / phase.totalMs) * 100)
   const remainingSec = Math.max(
     0,

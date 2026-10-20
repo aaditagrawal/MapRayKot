@@ -13,9 +13,13 @@ const clientSnapshot = () => true
 const serverSnapshot = () => false
 
 function Home() {
-  const isClient = useSyncExternalStore(subscribeToClient, clientSnapshot, serverSnapshot)
-  const locate = useMemo(() => isClient ? historyLocate() : [], [isClient])
-  const name = useMemo(() => isClient ? historyName() : [], [isClient])
+  const isClient = useSyncExternalStore(
+    subscribeToClient,
+    clientSnapshot,
+    serverSnapshot
+  )
+  const locate = useMemo(() => (isClient ? historyLocate() : []), [isClient])
+  const name = useMemo(() => (isClient ? historyName() : []), [isClient])
 
   return (
     <main className={classNames.componentsGameCountryAutocomplete0}>
@@ -45,9 +49,7 @@ function Hero() {
         <h1 className={classNames.routesIndex151}>
           Know the world,
           <br />
-          <em className={classNames.componentsGameGameHUD12}>
-            one country
-          </em> at
+          <em className={classNames.componentsGameGameHUD12}>one country</em> at
           a time.
         </h1>
 

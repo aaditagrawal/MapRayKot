@@ -31,12 +31,16 @@ function publishWorld(snapshot: Omit<WorldState, "retry">) {
 function subscribeWorld(notify: () => void) {
   listeners.add(notify)
   void loadWorld().catch(() => {})
-  return () => { listeners.delete(notify) }
+  return () => {
+    listeners.delete(notify)
+  }
 }
 
 const getWorldSnapshot = () => worldSnapshot
 const getServerWorldSnapshot = () => initialWorldSnapshot
-const retryWorld = () => { void loadWorld().catch(() => {}) }
+const retryWorld = () => {
+  void loadWorld().catch(() => {})
+}
 
 export function loadWorld(): Promise<WorldData> {
   if (cache) return cache
@@ -66,7 +70,11 @@ export function loadWorld(): Promise<WorldData> {
   p.catch((error) => {
     if (cache !== p) return
     cache = null
-    publishWorld({ data: resolved, error: error instanceof Error ? error : new Error(String(error)), loading: false })
+    publishWorld({
+      data: resolved,
+      error: error instanceof Error ? error : new Error(String(error)),
+      loading: false,
+    })
   })
   cache = p
   return p
@@ -80,7 +88,11 @@ export type WorldState = {
 }
 
 export function useWorld(): WorldState {
-  const snapshot = useSyncExternalStore(subscribeWorld, getWorldSnapshot, getServerWorldSnapshot)
+  const snapshot = useSyncExternalStore(
+    subscribeWorld,
+    getWorldSnapshot,
+    getServerWorldSnapshot
+  )
   return { ...snapshot, retry: retryWorld }
 }
 

@@ -26,7 +26,12 @@ const config = defineConfig({
           plugins: [["@stylexjs/babel-plugin", stylexOptions]],
           sourceMaps: true,
         })
-        return result?.code ? { code: result.code, map: result.map } : null
+        return result?.code
+          ? {
+              code: result.code,
+              map: result.map ? JSON.stringify(result.map) : null,
+            }
+          : null
       },
     },
     tanstackStart(),
